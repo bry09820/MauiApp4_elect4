@@ -1,0 +1,319 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MauiApp4_elect4"
+             x:Class="MauiApp4_elect4.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 PREMIUM FOOD DELIVERY · DARK CHARCOAL & SUNSET CORAL
+                 60-90 FPS GPU Optimized Design Tokens
+                 ═══════════════════════════════════════════════════════ -->
+
+            <!-- ── Surfaces ──────────────────────────────────────────── -->
+            <Color x:Key="PageBg">#121417</Color>
+            <Color x:Key="CardBg">#1A1D20</Color>
+            <Color x:Key="CardBgElevated">#22262B</Color>
+            <Color x:Key="CardBorder">#2C323B</Color>
+            <Color x:Key="CardBorderGlow">#3D4756</Color>
+
+            <!-- ── Brand Accents ─────────────────────────────────────── -->
+            <!-- Electric Sunset Coral — Primary CTA, Highlights, Floating Badges -->
+            <Color x:Key="BrandGreen">#FF6B4A</Color>
+            <Color x:Key="BrandGreenLight">#2E1E1B</Color>
+            <Color x:Key="BrandGreenMid">#FF886E</Color>
+            <Color x:Key="CoralDark">#E05333</Color>
+
+            <!-- Emerald Soft Green — Status, Badges, Confirmations -->
+            <Color x:Key="StatusGreen">#2ECC71</Color>
+            <Color x:Key="StatusGreenLight">#142B1F</Color>
+
+            <!-- Accent Palette -->
+            <Color x:Key="AccentBlue">#3B82F6</Color>
+            <Color x:Key="AccentBlueLight">#15243B</Color>
+            <Color x:Key="AccentAmber">#F59E0B</Color>
+            <Color x:Key="AccentAmberLight">#2E2312</Color>
+            <Color x:Key="AccentRed">#EF4444</Color>
+            <Color x:Key="AccentRedLight">#2D1719</Color>
+            <Color x:Key="AccentPurple">#A855F7</Color>
+            <Color x:Key="AccentPurpleLight">#241935</Color>
+
+            <!-- ── Typography Colors ─────────────────────────────────── -->
+            <Color x:Key="TextPrimary">#FFFFFF</Color>
+            <Color x:Key="TextSecondary">#8A94A6</Color>
+            <Color x:Key="TextMuted">#566070</Color>
+            <Color x:Key="TextWhite">#FFFFFF</Color>
+            <Color x:Key="BrandDark">#121417</Color>
+
+            <!-- ── Shadows ────────────────────────────────────────────── -->
+            <Shadow x:Key="CardShadow"
+                    Brush="#66000000"
+                    Offset="0,4"
+                    Radius="16"
+                    Opacity="0.35" />
+
+            <Shadow x:Key="FloatShadow"
+                    Brush="#88000000"
+                    Offset="0,8"
+                    Radius="24"
+                    Opacity="0.45" />
+
+            <Shadow x:Key="HeroGlowShadow"
+                    Brush="#66FF6B4A"
+                    Offset="0,8"
+                    Radius="30"
+                    Opacity="0.40" />
+
+            <Shadow x:Key="EmeraldGlowShadow"
+                    Brush="#552ECC71"
+                    Offset="0,4"
+                    Radius="16"
+                    Opacity="0.30" />
+
+            <!-- ── Typography Sizes ─────────────────────────────────── -->
+            <x:Double x:Key="FontH1">24</x:Double>
+            <x:Double x:Key="FontH2">20</x:Double>
+            <x:Double x:Key="FontH3">17</x:Double>
+            <x:Double x:Key="FontBody">14</x:Double>
+            <x:Double x:Key="FontCaption">12</x:Double>
+            <x:Double x:Key="FontMicro">11</x:Double>
+
+            <!-- ── Corner Radii ─────────────────────────────────────── -->
+            <x:Double x:Key="RadiusSm">10</x:Double>
+            <x:Double x:Key="RadiusMd">16</x:Double>
+            <x:Double x:Key="RadiusLg">20</x:Double>
+            <x:Double x:Key="RadiusXl">24</x:Double>
+            <x:Double x:Key="RadiusPill">50</x:Double>
+
+            <!-- ── Reusable Component Styles ────────────────────────── -->
+
+            <!-- Primary CTA — Electric Sunset Coral Pill -->
+            <Style x:Key="BtnPrimary" TargetType="Button">
+                <Setter Property="BackgroundColor"  Value="{StaticResource BrandGreen}" />
+                <Setter Property="TextColor"         Value="{StaticResource TextWhite}" />
+                <Setter Property="FontAttributes"    Value="Bold" />
+                <Setter Property="FontSize"          Value="{StaticResource FontBody}" />
+                <Setter Property="CornerRadius"      Value="25" />
+                <Setter Property="HeightRequest"     Value="50" />
+                <Setter Property="Padding"           Value="0" />
+                <Setter Property="Shadow"            Value="{StaticResource HeroGlowShadow}" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.88" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="Opacity" Value="0.40" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!-- Secondary / Outlined Dark Button -->
+            <Style x:Key="BtnSecondary" TargetType="Button">
+                <Setter Property="BackgroundColor"  Value="{StaticResource CardBgElevated}" />
+                <Setter Property="TextColor"         Value="{StaticResource TextPrimary}" />
+                <Setter Property="FontAttributes"    Value="Bold" />
+                <Setter Property="FontSize"          Value="{StaticResource FontBody}" />
+                <Setter Property="CornerRadius"      Value="25" />
+                <Setter Property="HeightRequest"     Value="50" />
+                <Setter Property="BorderColor"       Value="{StaticResource CardBorder}" />
+                <Setter Property="BorderWidth"       Value="1.5" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.85" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!-- Brand Green / Coral Accent Button (Aliases to Primary CTA) -->
+            <Style x:Key="BtnGreen" TargetType="Button">
+                <Setter Property="BackgroundColor"  Value="{StaticResource BrandGreen}" />
+                <Setter Property="TextColor"         Value="{StaticResource TextWhite}" />
+                <Setter Property="FontAttributes"    Value="Bold" />
+                <Setter Property="FontSize"          Value="{StaticResource FontBody}" />
+                <Setter Property="CornerRadius"      Value="24" />
+                <Setter Property="HeightRequest"     Value="50" />
+                <Setter Property="Padding"           Value="0" />
+                <Setter Property="Shadow"            Value="{StaticResource HeroGlowShadow}" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.88" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="Opacity" Value="0.40" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!-- Danger / Alert Button -->
+            <Style x:Key="BtnDanger" TargetType="Button">
+                <Setter Property="BackgroundColor"  Value="{StaticResource AccentRedLight}" />
+                <Setter Property="TextColor"         Value="{StaticResource AccentRed}" />
+                <Setter Property="BorderColor"       Value="{StaticResource AccentRed}" />
+                <Setter Property="BorderWidth"       Value="1" />
+                <Setter Property="FontAttributes"    Value="Bold" />
+                <Setter Property="FontSize"          Value="{StaticResource FontBody}" />
+                <Setter Property="CornerRadius"      Value="16" />
+                <Setter Property="HeightRequest"     Value="48" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="0.96" />
+                                    <Setter Property="Opacity" Value="0.80" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!-- Small Icon Circle Button (Qty +/-) -->
+            <Style x:Key="BtnIconSmall" TargetType="Button">
+                <Setter Property="CornerRadius"   Value="20" />
+                <Setter Property="WidthRequest"   Value="36" />
+                <Setter Property="HeightRequest"  Value="36" />
+                <Setter Property="Padding"        Value="0" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize"       Value="16" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="0.90" />
+                                    <Setter Property="Opacity" Value="0.80" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!-- Category Filter Pill -->
+            <Style x:Key="BtnPill" TargetType="Button">
+                <Setter Property="BackgroundColor"  Value="{StaticResource CardBgElevated}" />
+                <Setter Property="TextColor"         Value="{StaticResource TextSecondary}" />
+                <Setter Property="FontAttributes"    Value="Bold" />
+                <Setter Property="FontSize"          Value="13" />
+                <Setter Property="CornerRadius"      Value="24" />
+                <Setter Property="Padding"           Value="18,7" />
+                <Setter Property="Margin"            Value="2,4" />
+                <Setter Property="BorderColor"       Value="{StaticResource CardBorder}" />
+                <Setter Property="BorderWidth"       Value="1.2" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="1.0" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="Scale"   Value="0.92" />
+                                    <Setter Property="Opacity" Value="0.80" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!-- Dark Luxury Card Container -->
+            <Style x:Key="Card" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource CardBg}" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Stroke"           Value="{StaticResource CardBorder}" />
+                <Setter Property="StrokeShape"      Value="RoundRectangle 20" />
+                <Setter Property="Shadow"           Value="{StaticResource CardShadow}" />
+                <Setter Property="Padding"          Value="16" />
+            </Style>
+
+            <!-- Section Heading Label -->
+            <Style x:Key="SectionLabel" TargetType="Label">
+                <Setter Property="FontSize"       Value="{StaticResource FontH3}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor"      Value="{StaticResource TextPrimary}" />
+                <Setter Property="Margin"         Value="0,8,0,0" />
+            </Style>
+
+            <!-- Subtle Muted Caption -->
+            <Style x:Key="CaptionLabel" TargetType="Label">
+                <Setter Property="FontSize"  Value="{StaticResource FontCaption}" />
+                <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+            </Style>
+
+            <!-- Form Field Entry Wrapper -->
+            <Style x:Key="InputBorder" TargetType="Border">
+                <Setter Property="StrokeThickness" Value="1.2" />
+                <Setter Property="Stroke"           Value="{StaticResource CardBorder}" />
+                <Setter Property="StrokeShape"      Value="RoundRectangle 14" />
+                <Setter Property="BackgroundColor"  Value="{StaticResource CardBgElevated}" />
+                <Setter Property="Padding"          Value="14,0" />
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

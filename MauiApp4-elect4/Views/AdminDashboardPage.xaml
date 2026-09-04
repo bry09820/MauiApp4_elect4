@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp4_elect4.Views.AdminDashboardPage"
+             Title="Admin Dashboard"
+             BackgroundColor="{StaticResource PageBg}">
+
+    <ContentPage.Resources>
+        <!-- Order status list reused by every row Picker -->
+        <x:Array x:Key="OrderStatusList" Type="{x:Type x:String}">
+            <x:String>Pending</x:String>
+            <x:String>Processing</x:String>
+            <x:String>Out for Delivery</x:String>
+            <x:String>Delivered</x:String>
+        </x:Array>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ══════════════════════════════════════════════════════
+             SLEEK DARK TAB SELECTOR ROW
+             ══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource CardBg}"
+                StrokeThickness="0,0,0,1"
+                Stroke="{StaticResource CardBorder}"
+                StrokeShape="RoundRectangle 0"
+                Padding="12,10">
+            <Border.Shadow>
+                <Shadow Brush="#55000000" Offset="0,2" Radius="8" Opacity="0.3" />
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+
+                <!-- Tab 1: Products -->
+                <Button x:Name="ProductsTabButton"
+                        Grid.Column="0"
+                        Text="📦  Products"
+                        BackgroundColor="{StaticResource BrandGreen}"
+                        TextColor="{StaticResource TextWhite}"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        Clicked="OnProductsTabClicked">
+                    <Button.Shadow>
+                        <Shadow Brush="#55FF6B4A" Offset="0,2" Radius="8" Opacity="0.35" />
+                    </Button.Shadow>
+                </Button>
+
+                <!-- Tab 2: Orders -->
+                <Button x:Name="OrdersTabButton"
+                        Grid.Column="1"
+                        Text="📋  Orders"
+                        BackgroundColor="{StaticResource CardBgElevated}"
+                        TextColor="{StaticResource TextSecondary}"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        BorderColor="{StaticResource CardBorder}"
+                        BorderWidth="1.2"
+                        Clicked="OnOrdersTabClicked" />
+
+                <!-- Tab 3: Analytics -->
+                <Button x:Name="AnalyticsTabButton"
+                        Grid.Column="2"
+                        Text="📊  Analytics"
+                        BackgroundColor="{StaticResource CardBgElevated}"
+                        TextColor="{StaticResource TextSecondary}"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        BorderColor="{StaticResource CardBorder}"
+                        BorderWidth="1.2"
+                        Clicked="OnAnalyticsTabClicked" />
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════
+             PANEL 1: MANAGE PRODUCTS
+             ══════════════════════════════════════════════════ -->
+        <ScrollView x:Name="ProductsPanel" Grid.Row="1">
+            <VerticalStackLayout Padding="16,14" Spacing="12">
+
+                <!-- Add Product CTA -->
+                <Button Text="＋  Add New Dish"
+                        BackgroundColor="{StaticResource BrandGreen}"
+                        TextColor="{StaticResource TextWhite}"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        CornerRadius="24"
+                        HeightRequest="50"
+                        Clicked="OnAddProductClicked">
+                    <Button.Shadow>
+                        <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="12" Opacity="0.4" />
+                    </Button.Shadow>
+                </Button>
+
+                <!-- Product list -->
+                <CollectionView x:Name="AdminProductsView"
+                                SelectionMode="None"
+                                ItemSizingStrategy="MeasureFirstItem">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,5"
+                                    BackgroundColor="{StaticResource CardBg}"
+                                    StrokeThickness="1.2"
+                                    Stroke="{StaticResource CardBorder}"
+                                    StrokeShape="RoundRectangle 20"
+                                    Padding="16">
+                                <Border.Shadow>
+                                    <Shadow Brush="#55000000" Offset="0,3" Radius="10" Opacity="0.3" />
+                                </Border.Shadow>
+
+                                <Grid ColumnDefinitions="*,Auto,Auto"
+                                      RowDefinitions="Auto,Auto"
+                                      ColumnSpacing="8">
+
+                                    <Label Grid.Column="0" Grid.Row="0"
+                                           Text="{Binding Name}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="WordWrap" />
+
+                                    <Label Grid.Column="0" Grid.Row="1"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="${0:F2}  ·  Stock: {1}">
+                                                <Binding Path="Price" />
+                                                <Binding Path="StockQuantity" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+
+                                    <!-- Edit Stock -->
+                                    <Button Grid.Column="1" Grid.RowSpan="2"
+                                            Text="Edit"
+                                            BackgroundColor="{StaticResource AccentBlueLight}"
+                                            TextColor="{StaticResource AccentBlue}"
+                                            BorderColor="{StaticResource AccentBlue}"
+                                            BorderWidth="1"
+                                            FontSize="12"
+                                            FontAttributes="Bold"
+                                            CornerRadius="12"
+                                            WidthRequest="60"
+                                            HeightRequest="40"
+                                            CommandParameter="{Binding .}"
+                                            Clicked="OnEditStockClicked" />
+
+                                    <!-- Delete -->
+                                    <Button Grid.Column="2" Grid.RowSpan="2"
+                                            Text="🗑"
+                                            BackgroundColor="{StaticResource AccentRedLight}"
+                                            TextColor="{StaticResource AccentRed}"
+                                            BorderColor="{StaticResource AccentRed}"
+                                            BorderWidth="1"
+                                            FontSize="14"
+                                            CornerRadius="12"
+                                            WidthRequest="44"
+                                            HeightRequest="40"
+                                            CommandParameter="{Binding .}"
+                                            Clicked="OnDeleteProductClicked" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- ── Danger Zone ── -->
+                <BoxView HeightRequest="1" Color="{StaticResource CardBorder}" Margin="0,8,0,4" />
+
+                <Label Text="SYSTEM MAINTENANCE"
+                       FontSize="10"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource AccentRed}"
+                       Margin="2,0" />
+
+                <Button Text="🔄  Reset Application Demo Data"
+                        Style="{StaticResource BtnDanger}"
+                        Clicked="OnResetDataClicked" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ══════════════════════════════════════════════════════
+             PANEL 2: MANAGE ORDERS
+             ══════════════════════════════════════════════════════ -->
+        <Grid x:Name="OrdersPanel"
+              Grid.Row="1"
+              RowDefinitions="Auto,*"
+              IsVisible="False">
+
+            <!-- Filter chips with count badges -->
+            <ScrollView Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalScrollBarVisibility="Never"
+                        Padding="14,10,14,6">
+                <HorizontalStackLayout Spacing="8">
+
+                    <!-- Active filter chip -->
+                    <Button x:Name="FilterAllBtn"
+                            Text="All"
+                            BackgroundColor="{StaticResource BrandGreen}"
+                            TextColor="{StaticResource TextWhite}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            Padding="16,6"
+                            HeightRequest="36"
+                            Clicked="OnFilterChipClicked"
+                            CommandParameter="All" />
+
+                    <Button x:Name="FilterPendingBtn"
+                            Text="🕐 Pending"
+                            BackgroundColor="{StaticResource CardBgElevated}"
+                            TextColor="{StaticResource TextSecondary}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            Padding="16,6"
+                            HeightRequest="36"
+                            BorderColor="{StaticResource CardBorder}"
+                            BorderWidth="1.2"
+                            Clicked="OnFilterChipClicked"
+                            CommandParameter="Pending" />
+
+                    <Button x:Name="FilterProcessingBtn"
+                            Text="⚙️ Processing"
+                            BackgroundColor="{StaticResource CardBgElevated}"
+                            TextColor="{StaticResource TextSecondary}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            Padding="16,6"
+                            HeightRequest="36"
+                            BorderColor="{StaticResource CardBorder}"
+                            BorderWidth="1.2"
+                            Clicked="OnFilterChipClicked"
+                            CommandParameter="Processing" />
+
+                    <Button x:Name="FilterOutForDeliveryBtn"
+                            Text="🚚 Out for Delivery"
+                            BackgroundColor="{StaticResource CardBgElevated}"
+                            TextColor="{StaticResource TextSecondary}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            Padding="16,6"
+                            HeightRequest="36"
+                            BorderColor="{StaticResource CardBorder}"
+                            BorderWidth="1.2"
+                            Clicked="OnFilterChipClicked"
+                            CommandParameter="Out for Delivery" />
+
+                    <Button x:Name="FilterDeliveredBtn"
+                            Text="✅ Delivered"
+                            BackgroundColor="{StaticResource CardBgElevated}"
+                            TextColor="{StaticResource TextSecondary}"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            Padding="16,6"
+                            HeightRequest="36"
+                            BorderColor="{StaticResource CardBorder}"
+                            BorderWidth="1.2"
+                            Clicked="OnFilterChipClicked"
+                            CommandParameter="Delivered" />
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <!-- Orders list -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="16,4,16,16" Spacing="0">
+
+                    <Label x:Name="NoOrdersLabel"
+                           Text="No orders found for this filter."
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           HorizontalTextAlignment="Center"
+                           Padding="0,32"
+                           IsVisible="True" />
+
+                    <CollectionView x:Name="AdminOrdersView"
+                                    SelectionMode="None"
+                                    ItemSizingStrategy="MeasureFirstItem">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,5"
+                                        BackgroundColor="{StaticResource CardBg}"
+                                        StrokeThickness="1.2"
+                                        Stroke="{StaticResource CardBorder}"
+                                        StrokeShape="RoundRectangle 20"
+                                        Padding="16">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAdminOrderTapped" CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Border.Shadow>
+                                        <Shadow Brush="#55000000" Offset="0,3" Radius="10" Opacity="0.3" />
+                                    </Border.Shadow>
+
+                                    <VerticalStackLayout Spacing="6">
+
+                                        <!-- Order # + total -->
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource TextPrimary}">
+                                                <Label.Text>
+                                                    <MultiBinding StringFormat="Order #{0}  ·  {1}">
+                                                        <Binding Path="Id" />
+                                                        <Binding Path="CustomerName" />
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding TotalAmount, StringFormat='${0:F2}'}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource BrandGreen}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+
+                                        <!-- Date + payment -->
+                                        <Label FontSize="12" TextColor="{StaticResource TextSecondary}">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0:ddd, MMM d yyyy}  ·  {1}">
+                                                    <Binding Path="ScheduledDeliveryDate" />
+                                                    <Binding Path="PaymentMethod" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+
+                                        <!-- Address -->
+                                        <Label Text="{Binding ShippingAddress}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextMuted}"
+                                               LineBreakMode="WordWrap" />
+
+                                        <!-- Items summary -->
+                                        <Label Text="{Binding ItemSummary}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextSecondary}" />
+
+                                        <BoxView HeightRequest="1" Color="{StaticResource CardBorder}" Margin="0,2" />
+
+                                        <!-- Status Picker -->
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                            <Label Grid.Column="0"
+                                                   Text="Status:"
+                                                   FontSize="13"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   VerticalOptions="Center" />
+                                            <Picker Grid.Column="1"
+                                                    FontSize="13"
+                                                    TextColor="{StaticResource BrandGreen}"
+                                                    TitleColor="{StaticResource TextSecondary}"
+                                                    ItemsSource="{StaticResource OrderStatusList}"
+                                                    SelectedItem="{Binding Status}"
+                                                    SelectedIndexChanged="OnStatusPickerChanged" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════════════
+             PANEL 3: ANALYTICS (KPIs + Link to Reports)
+             ══════════════════════════════════════════════════════ -->
+        <ScrollView x:Name="AnalyticsPanel" Grid.Row="1" IsVisible="False">
+            <VerticalStackLayout Padding="16,14" Spacing="16">
+
+                <!-- Open full dashboard CTA -->
+                <Button Text="📊  Open Full Analytics Dashboard  →"
+                        BackgroundColor="{StaticResource BrandGreen}"
+                        TextColor="{StaticResource TextWhite}"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        CornerRadius="24"
+                        HeightRequest="52"
+                        Clicked="OnOpenReportsClicked">
+                    <Button.Shadow>
+                        <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="12" Opacity="0.4" />
+                    </Button.Shadow>
+                </Button>
+
+                <!-- Section label -->
+                <Label Text="Live Business KPIs"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}" />
+
+                <!-- 2×2 KPI mini-cards with Trend Indicators -->
+                <Grid ColumnDefinitions="*,*"
+                      RowDefinitions="Auto,Auto"
+                      ColumnSpacing="12"
+                      RowSpacing="12">
+
+                    <!-- Revenue Card -->
+                    <Border Grid.Column="0" Grid.Row="0"
+                            BackgroundColor="{StaticResource CardBg}"
+                            StrokeThickness="1.2"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 20"
+                            Padding="16">
+                        <Border.Shadow>
+                            <Shadow Brush="#55000000" Offset="0,3" Radius="10" Opacity="0.3" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource BrandGreenLight}"
+                                        StrokeThickness="1"
+                                        Stroke="{StaticResource BrandGreen}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="8,5"
+                                        HorizontalOptions="Start">
+                                    <Label Text="💰" FontSize="18" />
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="+18.4%"
+                                       FontSize="10"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource StatusGreen}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                            <Label Text="Total Revenue"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   Margin="0,2,0,0" />
+                            <Label x:Name="QuickRevenueLabel"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource BrandGreen}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Orders Card -->
+                    <Border Grid.Column="1" Grid.Row="0"
+                            BackgroundColor="{StaticResource CardBg}"
+                            StrokeThickness="1.2"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 20"
+                            Padding="16">
+                        <Border.Shadow>
+                            <Shadow Brush="#55000000" Offset="0,3" Radius="10" Opacity="0.3" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource AccentBlueLight}"
+                                        StrokeThickness="1"
+                                        Stroke="{StaticResource AccentBlue}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="8,5"
+                                        HorizontalOptions="Start">
+                                    <Label Text="🛒" FontSize="18" />
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="+12.0%"
+                                       FontSize="10"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource StatusGreen}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                            <Label Text="Total Orders"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   Margin="0,2,0,0" />
+                            <Label x:Name="QuickOrdersLabel"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Avg Value Card -->
+                    <Border Grid.Column="0" Grid.Row="1"
+                            BackgroundColor="{StaticResource CardBg}"
+                            StrokeThickness="1.2"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 20"
+                            Padding="16">
+                        <Border.Shadow>
+                            <Shadow Brush="#55000000" Offset="0,3" Radius="10" Opacity="0.3" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource AccentPurpleLight}"
+                                        StrokeThickness="1"
+                                        Stroke="{StaticResource AccentPurple}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="8,5"
+                                        HorizontalOptions="Start">
+                                    <Label Text="📉" FontSize="18" />
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="+4.8%"
+                                       FontSize="10"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource StatusGreen}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                            <Label Text="Avg Ticket"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   Margin="0,2,0,0" />
+                            <Label x:Name="QuickAvgLabel"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AccentPurple}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Delivered Card -->
+                    <Border Grid.Column="1" Grid.Row="1"
+                            BackgroundColor="{StaticResource CardBg}"
+                            StrokeThickness="1.2"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 20"
+                            Padding="16">
+                        <Border.Shadow>
+                            <Shadow Brush="#55000000" Offset="0,3" Radius="10" Opacity="0.3" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Border Grid.Column="0"
+                                        BackgroundColor="{StaticResource StatusGreenLight}"
+                                        StrokeThickness="1"
+                                        Stroke="{StaticResource StatusGreen}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="8,5"
+                                        HorizontalOptions="Start">
+                                    <Label Text="✅" FontSize="18" />
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="98% on-time"
+                                       FontSize="10"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource StatusGreen}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                            <Label Text="Completed"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   Margin="0,2,0,0" />
+                            <Label x:Name="QuickDeliveredLabel"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource StatusGreen}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

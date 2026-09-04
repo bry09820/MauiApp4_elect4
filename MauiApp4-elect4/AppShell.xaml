@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MauiApp4_elect4.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MauiApp4_elect4"
+    xmlns:views="clr-namespace:MauiApp4_elect4.Views"
+    Title="FreshMart"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarBackgroundColor="#121417"
+    Shell.TabBarForegroundColor="#FF6B4A"
+    Shell.TabBarUnselectedColor="#8A94A6"
+    Shell.TabBarTitleColor="#FF6B4A">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB BAR  ·  Five persistent bottom-navigation tabs
+         Navigation flow:
+           Catalog  →  Cart  →  (CheckoutPage via push)
+           Profile  →  order history
+           Admin    →  Products / Orders / Analytics
+           Reports  →  full analytics dashboard
+         ═══════════════════════════════════════════════════════════ -->
+    <TabBar>
+
+        <!-- 1 · Product Catalog ──────────────────────────────── -->
+        <ShellContent
+            Title="Catalog"
+            Icon="dotnet_bot.png"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+
+        <!-- 2 · Shopping Cart ───────────────────────────────── -->
+        <ShellContent
+            Title="Cart"
+            Icon="dotnet_bot.png"
+            ContentTemplate="{DataTemplate views:CartPage}"
+            Route="CartPage" />
+
+        <!-- 3 · My Profile + Order History ─────────────────── -->
+        <ShellContent
+            Title="Profile"
+            Icon="dotnet_bot.png"
+            ContentTemplate="{DataTemplate views:ProfilePage}"
+            Route="ProfilePage" />
+
+        <!-- 4 · Admin Dashboard (Products / Orders / Analytics) -->
+        <ShellContent
+            Title="Admin"
+            Icon="dotnet_bot.png"
+            ContentTemplate="{DataTemplate views:AdminDashboardPage}"
+            Route="AdminDashboardPage" />
+
+        <!-- 5 · Full Sales Analytics / Reports ─────────────── -->
+        <ShellContent
+            Title="Reports"
+            Icon="dotnet_bot.png"
+            ContentTemplate="{DataTemplate views:ReportsPage}"
+            Route="ReportsPage" />
+
+    </TabBar>
+
+</Shell>

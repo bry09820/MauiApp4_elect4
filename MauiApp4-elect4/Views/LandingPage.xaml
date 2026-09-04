@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp4_elect4.Views.LandingPage"
+             Title=""
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#121417">
+
+    <!-- ═══════════════════════════════════════════════════════
+         LANDING PAGE · Sleek Dark Charcoal · Luxury Food Hero
+         ═══════════════════════════════════════════════════════ -->
+
+    <Grid>
+        <!-- Background Ambient Glow Blobs -->
+        <AbsoluteLayout InputTransparent="True">
+            <Ellipse AbsoluteLayout.LayoutBounds="0.1, 0.05, 300, 300"
+                     AbsoluteLayout.LayoutFlags="PositionProportional"
+                     Fill="#1FFF6B4A" />
+
+            <Ellipse AbsoluteLayout.LayoutBounds="0.9, 0.90, 260, 260"
+                     AbsoluteLayout.LayoutFlags="PositionProportional"
+                     Fill="#18FF886E" />
+
+            <Ellipse AbsoluteLayout.LayoutBounds="0.5, 0.45, 360, 360"
+                     AbsoluteLayout.LayoutFlags="PositionProportional"
+                     Fill="#122ECC71" />
+        </AbsoluteLayout>
+
+        <!-- Main Content Grid Layout -->
+        <Grid x:Name="ContentStack"
+              RowDefinitions="Auto, Auto, Auto, *, Auto, Auto"
+              Padding="26,44,26,32"
+              Opacity="0"
+              Scale="0.94">
+
+            <!-- Row 0: Top Luxury Pill Badge -->
+            <Border Grid.Row="0"
+                    BackgroundColor="#22262B"
+                    Stroke="#2C323B"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="14,6"
+                    HorizontalOptions="Start"
+                    Margin="0,0,0,14">
+                <HorizontalStackLayout Spacing="6">
+                    <Label Text="🔥" FontSize="13" VerticalOptions="Center" />
+                    <Label Text="PREMIUM FOOD DELIVERY"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           TextColor="#FF6B4A"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <!-- Row 1: Hero Heading -->
+            <Label Grid.Row="0"
+       FontSize="36"
+       FontAttributes="Bold"
+       TextColor="#FFFFFF"
+       LineHeight="3.30"
+       HorizontalOptions="Start"
+       Margin="0,0,0,10">
+                <Label.Text>Brand:Go Gro(cery) Glopw</Label.Text>
+            </Label>
+            
+            <Label Grid.Row="1"
+                   FontSize="36"
+                   FontAttributes="Bold"
+                   TextColor="#FFFFFF"
+                   LineHeight="1.15"
+                   HorizontalOptions="Start"
+                   Margin="0,0,0,10">
+                <Label.Text>Savor Every Bite.
+Delivered Hot &amp; Fresh.</Label.Text>
+            </Label>
+
+
+            <!-- Row 2: Subtitle -->
+            <Label Grid.Row="2"
+                   Text="Explore chef-crafted cuisines, artisanal groceries, and mouthwatering dishes delivered to your doorstep in minutes."
+                   FontSize="13"
+                   TextColor="#8A94A6"
+                   LineHeight="1.4"
+                   HorizontalOptions="Start"
+                   Margin="0,0,0,16" />
+
+            <!-- Row 3: Central Dish Plate Container with Ambient Glow & Floating Badges -->
+            <Grid Grid.Row="3"
+                  VerticalOptions="Center"
+                  HorizontalOptions="Center"
+                  WidthRequest="310"
+                  HeightRequest="270">
+
+                <!-- Ambient Glow Ring -->
+                <Ellipse Fill="#28FF6B4A"
+                         WidthRequest="230"
+                         HeightRequest="230"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center" />
+
+                <!-- Central Dish Plate Card -->
+                <Border BackgroundColor="#1A1D20"
+                        Stroke="#3D4756"
+                        StrokeThickness="1.5"
+                        StrokeShape="RoundRectangle 110"
+                        WidthRequest="220"
+                        HeightRequest="220"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="#88FF6B4A" Offset="0,10" Radius="36" Opacity="0.55" />
+                    </Border.Shadow>
+
+                    <!-- Inner Glow Ring -->
+                    <Border BackgroundColor="#22262B"
+                            Stroke="#FF6B4A"
+                            StrokeThickness="2"
+                            StrokeShape="RoundRectangle 100"
+                            WidthRequest="196"
+                            HeightRequest="196"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                        <Label Text="🍝"
+                               FontSize="82"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                </Border>
+
+                <!-- Floating Tag 1: Top Right Rating Tag -->
+                <Border BackgroundColor="#1A1D20"
+                        Stroke="#2ECC71"
+                        StrokeThickness="1.2"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="10,6"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        Margin="0,12,6,0">
+                    <Border.Shadow>
+                        <Shadow Brush="#552ECC71" Offset="0,4" Radius="14" Opacity="0.4" />
+                    </Border.Shadow>
+                    <HorizontalStackLayout Spacing="4">
+                        <Label Text="⭐" FontSize="11" VerticalOptions="Center" />
+                        <Label Text="4.9 Rated"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="#2ECC71"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Floating Tag 2: Bottom Left Speed Tag -->
+                <Border BackgroundColor="#1A1D20"
+                        Stroke="#FF6B4A"
+                        StrokeThickness="1.2"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="10,6"
+                        HorizontalOptions="Start"
+                        VerticalOptions="End"
+                        Margin="4,0,0,16">
+                    <Border.Shadow>
+                        <Shadow Brush="#55FF6B4A" Offset="0,4" Radius="14" Opacity="0.4" />
+                    </Border.Shadow>
+                    <HorizontalStackLayout Spacing="4">
+                        <Label Text="⚡" FontSize="11" VerticalOptions="Center" />
+                        <Label Text="20-30 min"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="#FF6B4A"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Row 4: Carousel Dot indicators -->
+            <HorizontalStackLayout Grid.Row="4"
+                                   HorizontalOptions="Center"
+                                   Spacing="8"
+                                   Margin="0,10,0,20">
+                <Border BackgroundColor="#FF6B4A"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 4"
+                        WidthRequest="26"
+                        HeightRequest="6" />
+                <Ellipse Fill="#353C47" WidthRequest="6" HeightRequest="6" />
+                <Ellipse Fill="#353C47" WidthRequest="6" HeightRequest="6" />
+            </HorizontalStackLayout>
+
+            <!-- Row 5: Get Started Full Pill Button -->
+            <Button Grid.Row="5"
+                    x:Name="GetStartedButton"
+                    Text="Explore Menu  →"
+                    BackgroundColor="#FF6B4A"
+                    TextColor="#FFFFFF"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    CornerRadius="28"
+                    HeightRequest="56"
+                    HorizontalOptions="Fill"
+                    Clicked="OnGetStartedClicked">
+                <Button.Shadow>
+                    <Shadow Brush="#66FF6B4A" Offset="0,6" Radius="20" Opacity="0.45" />
+                </Button.Shadow>
+            </Button>
+
+        </Grid>
+    </Grid>
+</ContentPage>

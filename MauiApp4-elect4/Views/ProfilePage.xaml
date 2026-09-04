@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp4_elect4.Views.ProfilePage"
+             Title="My Profile"
+             BackgroundColor="{StaticResource PageBg}">
+
+    <ScrollView x:Name="ProfileScrollView">
+        <VerticalStackLayout Padding="16,14" Spacing="16">
+
+            <!-- ══════════════════════════════════════════════════
+                 LUXURY AVATAR HERO CARD
+                 ══════════════════════════════════════════════════ -->
+            <Border BackgroundColor="{StaticResource CardBg}"
+                    StrokeThickness="1.5"
+                    Stroke="{StaticResource CardBorder}"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="20,24">
+                <Border.Shadow>
+                    <Shadow Brush="#66000000" Offset="0,6" Radius="20" Opacity="0.4" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+
+                    <!-- Avatar Ring with Ambient Coral Glow -->
+                    <Grid WidthRequest="100" HeightRequest="100" HorizontalOptions="Center">
+                        <Border BackgroundColor="#22262B"
+                                StrokeThickness="2.5"
+                                Stroke="{StaticResource BrandGreen}"
+                                StrokeShape="RoundRectangle 50"
+                                WidthRequest="96"
+                                HeightRequest="96"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                            <Border.Shadow>
+                                <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="16" Opacity="0.4" />
+                            </Border.Shadow>
+                            <Label x:Name="AvatarLabel"
+                                   Text="J"
+                                   FontSize="40"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource BrandGreen}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <!-- Verified Badge Icon -->
+                        <Border BackgroundColor="{StaticResource StatusGreen}"
+                                StrokeThickness="2"
+                                Stroke="{StaticResource CardBg}"
+                                StrokeShape="RoundRectangle 12"
+                                WidthRequest="24"
+                                HeightRequest="24"
+                                HorizontalOptions="End"
+                                VerticalOptions="End"
+                                Margin="0,0,4,4">
+                            <Label Text="✓"
+                                   FontSize="12"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                    </Grid>
+
+                    <!-- Name -->
+                    <Label x:Name="ProfileNameLabel"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           HorizontalOptions="Center" />
+
+                    <!-- Email Pill -->
+                    <Border BackgroundColor="{StaticResource CardBgElevated}"
+                            StrokeThickness="1"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="12,4"
+                            HorizontalOptions="Center">
+                        <Label x:Name="ProfileEmailLabel"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ══════════════════════════════════════════════════
+                 QUICK SETTINGS & PREFERENCES GROUP
+                 ══════════════════════════════════════════════════ -->
+            <Label Text="Preferences &amp; Shortcuts"
+                   FontSize="17"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="2,0" />
+
+            <Border BackgroundColor="{StaticResource CardBg}"
+                    StrokeThickness="1.2"
+                    Stroke="{StaticResource CardBorder}"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="16">
+                <Border.Shadow>
+                    <Shadow Brush="#55000000" Offset="0,4" Radius="12" Opacity="0.3" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <!-- Dark Mode Active Toggle Row -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                        <Label Grid.Column="0" Text="🌙" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                            <Label Text="Dark Charcoal Mode"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label x:Name="ThemeSubtitleLabel"
+                                   Text="Ultra-smooth 60-90 FPS theme"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
+                        <Switch x:Name="DarkModeSwitch"
+                                Grid.Column="2"
+                                IsToggled="True"
+                                OnColor="{StaticResource BrandGreen}"
+                                ThumbColor="White"
+                                VerticalOptions="Center"
+                                Toggled="OnDarkModeToggled" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource CardBorder}" />
+
+                    <!-- Quick Shortcuts Row (Interactive Buttons) -->
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                        <Button x:Name="OrdersShortcutBtn"
+                                Grid.Column="0"
+                                Text="📦  Orders"
+                                BackgroundColor="{StaticResource CardBgElevated}"
+                                TextColor="{StaticResource TextPrimary}"
+                                BorderColor="{StaticResource CardBorder}"
+                                BorderWidth="1.2"
+                                CornerRadius="14"
+                                HeightRequest="48"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                Clicked="OnOrdersShortcutClicked" />
+
+                        <Button x:Name="AddressesShortcutBtn"
+                                Grid.Column="1"
+                                Text="📍  Address"
+                                BackgroundColor="{StaticResource CardBgElevated}"
+                                TextColor="{StaticResource TextPrimary}"
+                                BorderColor="{StaticResource CardBorder}"
+                                BorderWidth="1.2"
+                                CornerRadius="14"
+                                HeightRequest="48"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                Clicked="OnAddressesShortcutClicked" />
+
+                        <Button x:Name="PaymentShortcutBtn"
+                                Grid.Column="2"
+                                Text="💳  Payment"
+                                BackgroundColor="{StaticResource CardBgElevated}"
+                                TextColor="{StaticResource TextPrimary}"
+                                BorderColor="{StaticResource CardBorder}"
+                                BorderWidth="1.2"
+                                CornerRadius="14"
+                                HeightRequest="48"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                Clicked="OnPaymentShortcutClicked" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource CardBorder}" />
+
+                    <!-- Help Center & Support Row -->
+                    <Border BackgroundColor="{StaticResource CardBgElevated}"
+                            StrokeThickness="1.2"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="14,12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnHelpCenterTapped" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Grid.Column="0" Text="🎧" FontSize="18" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                <Label Text="Help Center &amp; Live Support"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}" />
+                                <Label Text="24/7 Delivery &amp; Order Assistance"
+                                       FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="20" TextColor="{StaticResource TextMuted}" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Logout / Switch Account Row -->
+                    <Border BackgroundColor="{StaticResource AccentRedLight}"
+                            StrokeThickness="1"
+                            Stroke="{StaticResource AccentRed}"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="14,12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLogoutTapped" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Grid.Column="0" Text="🚪" FontSize="18" VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                <Label Text="Log Out / Switch Profile"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AccentRed}" />
+                                <Label Text="End session or switch to another user"
+                                       FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="20" TextColor="{StaticResource AccentRed}" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ══════════════════════════════════════════════════
+                 ACCOUNT DETAILS CARD
+                 ══════════════════════════════════════════════════ -->
+            <Label Text="Account Details"
+                   FontSize="17"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextPrimary}"
+                   Margin="2,0" />
+
+            <Border BackgroundColor="{StaticResource CardBg}"
+                    StrokeThickness="1.2"
+                    Stroke="{StaticResource CardBorder}"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="18">
+                <Border.Shadow>
+                    <Shadow Brush="#55000000" Offset="0,4" Radius="12" Opacity="0.3" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="14">
+
+                    <!-- Full Name -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Full Name"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextSecondary}"
+                               Margin="2,0" />
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry x:Name="NameEntry"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   BackgroundColor="Transparent" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Email -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Email Address"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextSecondary}"
+                               Margin="2,0" />
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry x:Name="EmailEntry"
+                                   Keyboard="Email"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   BackgroundColor="Transparent" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Contact Number -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Contact Number"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextSecondary}"
+                               Margin="2,0" />
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry x:Name="ContactEntry"
+                                   Keyboard="Telephone"
+                                   FontSize="14"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   BackgroundColor="Transparent" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Default Address -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Default Delivery Address"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextSecondary}"
+                               Margin="2,0" />
+                        <Border StrokeThickness="1.2"
+                                Stroke="{StaticResource CardBorder}"
+                                StrokeShape="RoundRectangle 14"
+                                BackgroundColor="{StaticResource CardBgElevated}"
+                                Padding="14,6">
+                            <Editor x:Name="AddressEditor"
+                                    AutoSize="TextChanges"
+                                    MinimumHeightRequest="64"
+                                    FontSize="14"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    BackgroundColor="Transparent" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Save CTA -->
+                    <Button Text="Save Profile Changes"
+                            Style="{StaticResource BtnPrimary}"
+                            HeightRequest="50"
+                            CornerRadius="25"
+                            Margin="0,4,0,0"
+                            Clicked="OnSaveProfileClicked">
+                        <Button.Shadow>
+                            <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="12" Opacity="0.4" />
+                        </Button.Shadow>
+                    </Button>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ══════════════════════════════════════════════════
+                 ORDER HISTORY
+                 ══════════════════════════════════════════════════ -->
+            <VerticalStackLayout x:Name="OrdersSectionContainer" Spacing="8">
+                <Label Text="Recent Orders"
+                       FontSize="17"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"
+                       Margin="2,0" />
+
+                <!-- Empty state -->
+                <Label x:Name="NoOrdersLabel"
+                       Text="You haven't placed any orders yet."
+                       FontSize="14"
+                       TextColor="{StaticResource TextSecondary}"
+                       HorizontalTextAlignment="Center"
+                       Padding="0,16"
+                       IsVisible="False" />
+
+                <!-- History list -->
+                <CollectionView x:Name="OrderHistoryView"
+                                SelectionMode="None"
+                                ItemSizingStrategy="MeasureFirstItem">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,5"
+                                    BackgroundColor="{StaticResource CardBg}"
+                                    StrokeThickness="1.2"
+                                    Stroke="{StaticResource CardBorder}"
+                                    StrokeShape="RoundRectangle 20"
+                                    Padding="16">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnOrderItemTapped" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Border.Shadow>
+                                    <Shadow Brush="#55000000" Offset="0,4" Radius="10" Opacity="0.3" />
+                                </Border.Shadow>
+
+                                <Grid ColumnDefinitions="*,Auto"
+                                      RowDefinitions="Auto,Auto,Auto"
+                                      RowSpacing="5">
+
+                                    <!-- Order ID -->
+                                    <Label Grid.Column="0" Grid.Row="0"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="Order #{0}">
+                                                <Binding Path="Id" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+
+                                    <!-- Total Amount -->
+                                    <Label Grid.Column="1" Grid.Row="0"
+                                           Text="{Binding TotalAmount, StringFormat='${0:F2}'}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource BrandGreen}"
+                                           VerticalOptions="Center" />
+
+                                    <!-- Date + payment -->
+                                    <Label Grid.Column="0" Grid.Row="1"
+                                           Grid.ColumnSpan="2"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextSecondary}">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0:ddd, MMM d yyyy}  ·  {1}">
+                                                <Binding Path="ScheduledDeliveryDate" />
+                                                <Binding Path="PaymentMethod" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+
+                                    <!-- Status Badge -->
+                                    <Border Grid.Column="0" Grid.Row="2"
+                                            Grid.ColumnSpan="2"
+                                            Margin="0,4,0,0"
+                                            Padding="10,4"
+                                            HorizontalOptions="Start"
+                                            BackgroundColor="{StaticResource StatusGreenLight}"
+                                            StrokeThickness="1"
+                                            Stroke="{StaticResource StatusGreen}"
+                                            StrokeShape="RoundRectangle 10">
+                                        <Label Text="{Binding Status}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource StatusGreen}" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Bottom Spacer -->
+            <BoxView HeightRequest="20" Color="Transparent" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,24 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Local NuGet packages cache
+local-nuget/
+*.nupkg
+*.snupkg
+
+# Visual Studio & IDE files
+.vs/
+.idea/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.tmp
+*.bak
+
+# macOS / Windows OS files
+.DS_Store
+Thumbs.db
