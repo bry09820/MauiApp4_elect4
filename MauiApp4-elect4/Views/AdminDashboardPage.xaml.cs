@@ -18,10 +18,10 @@ namespace MauiApp4_elect4.Views
         private string _activeOrderFilter = "All";
 
         // Design system colors
-        private static readonly Color ColActiveTabBg   = Color.FromArgb("#FF6B4A"); // Coral
+        private static readonly Color ColActiveTabBg   = Color.FromArgb("#1E6B39"); // Forest Green
         private static readonly Color ColActiveTabTxt  = Colors.White;
-        private static readonly Color ColInactiveTabBg = Color.FromArgb("#22262B"); // Dark elevated panel
-        private static readonly Color ColInactiveTabTxt = Color.FromArgb("#8A94A6"); // Muted platinum
+        private static readonly Color ColInactiveTabBg = Color.FromArgb("#F1F5F9"); // Light elevated panel
+        private static readonly Color ColInactiveTabTxt = Color.FromArgb("#718096"); // Muted slate
 
         public AdminDashboardPage()
         {

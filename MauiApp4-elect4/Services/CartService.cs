@@ -1,14 +1,15 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using MauiApp4_elect4.Models;
 
 namespace MauiApp4_elect4.Services
 {
     /// <summary>
     /// Singleton service that owns the shopping cart state for the entire session.
-    /// UI layers bind directly to <see cref="CartItems"/> so the UI updates automatically
-    /// whenever the collection changes.
+    /// UI layers bind directly to <see cref="CartItems"/> and <see cref="CartUpdated"/>
+    /// so the UI updates automatically whenever items or quantities change.
     /// </summary>
-    public class CartService
+    public class CartService : INotifyPropertyChanged
     {
         // ── Singleton ────────────────────────────────────────────────────────
         private static readonly Lazy<CartService> _instance =
@@ -17,15 +18,101 @@ namespace MauiApp4_elect4.Services
         /// <summary>The one shared instance of the cart for the app lifetime.</summary>
         public static CartService Instance => _instance.Value;
 
-        // Private constructor — use Instance property.
-        private CartService() { }
+        public event EventHandler? CartUpdated;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        // Private constructor — initialize demo items matching reference design
+        private CartService()
+        {
+            CartItems.CollectionChanged += (s, e) =>
+            {
+                if (e.NewItems != null)
+                {
+                    foreach (CartItem item in e.NewItems)
+                    {
+                        item.PropertyChanged -= OnItemPropertyChanged;
+                        item.PropertyChanged += OnItemPropertyChanged;
+                    }
+                }
+                if (e.OldItems != null)
+                {
+                    foreach (CartItem item in e.OldItems)
+                    {
+                        item.PropertyChanged -= OnItemPropertyChanged;
+                    }
+                }
+                NotifyCartChanged();
+            };
+
+            InitializeDemoCart();
+        }
+
+        private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            NotifyCartChanged();
+        }
+
+        private void NotifyCartChanged()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CartItems)));
+            CartUpdated?.Invoke(this, EventArgs.Empty);
+        }
 
         // ── State ────────────────────────────────────────────────────────────
         /// <summary>
         /// Live collection of items in the cart.
-        /// Bind CollectionViews or Labels directly to this — changes propagate automatically.
         /// </summary>
         public ObservableCollection<CartItem> CartItems { get; } = [];
+
+        public void InitializeDemoCart()
+        {
+            if (CartItems.Count > 0) return;
+
+            CartItems.Add(new CartItem
+            {
+                Product = new Product
+                {
+                    Id = 401,
+                    Name = "Sourdough Bread",
+                    Category = "Bakery",
+                    Price = 1.99m,
+                    Weight = "1.0g",
+                    StockQuantity = 40,
+                    ImageUrl = "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=500&auto=format&fit=crop&q=80"
+                },
+                Quantity = 1
+            });
+
+            CartItems.Add(new CartItem
+            {
+                Product = new Product
+                {
+                    Id = 204,
+                    Name = "Fresh Lettuce",
+                    Category = "Vegetables",
+                    Price = 1.99m,
+                    Weight = "1.0g",
+                    StockQuantity = 75,
+                    ImageUrl = "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=500&auto=format&fit=crop&q=80"
+                },
+                Quantity = 1
+            });
+
+            CartItems.Add(new CartItem
+            {
+                Product = new Product
+                {
+                    Id = 501,
+                    Name = "Orange Juice",
+                    Category = "Beverages",
+                    Price = 1.29m,
+                    Weight = "1.0g",
+                    StockQuantity = 95,
+                    ImageUrl = "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80"
+                },
+                Quantity = 1
+            });
+        }
 
         // ── Public API ───────────────────────────────────────────────────────
 
@@ -43,10 +130,6 @@ namespace MauiApp4_elect4.Services
             if (existing is not null)
             {
                 existing.Quantity++;
-                // ObservableCollection doesn't detect property changes on items —
-                // replace the item so the UI refreshes.
-                var idx = CartItems.IndexOf(existing);
-                CartItems[idx] = existing;
             }
             else
             {
@@ -60,11 +143,7 @@ namespace MauiApp4_elect4.Services
         public void IncrementQuantity(CartItem item)
         {
             if (item is null) return;
-            var idx = CartItems.IndexOf(item);
-            if (idx < 0) return;
-
             item.Quantity++;
-            CartItems[idx] = item;   // trigger ObservableCollection change
         }
 
         /// <summary>
@@ -74,17 +153,14 @@ namespace MauiApp4_elect4.Services
         public void DecrementQuantity(CartItem item)
         {
             if (item is null) return;
-            var idx = CartItems.IndexOf(item);
-            if (idx < 0) return;
 
             if (item.Quantity <= 1)
             {
-                CartItems.RemoveAt(idx);
+                CartItems.Remove(item);
                 return;
             }
 
             item.Quantity--;
-            CartItems[idx] = item;   // trigger ObservableCollection change
         }
 
         /// <summary>Removes a specific cart item regardless of its quantity.</summary>

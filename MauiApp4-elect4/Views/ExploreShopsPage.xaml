@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiApp4_elect4.MainPage"
+             x:Class="MauiApp4_elect4.Views.ExploreShopsPage"
              Title="Explore Shops"
-             BackgroundColor="{StaticResource PageBg}">
+             BackgroundColor="{StaticResource PageBg}"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="True">
 
     <!-- ═══════════════════════════════════════════════════════
          ROOT GRID — Top Header + Scrollable Content Body
@@ -21,14 +23,25 @@
             </Border.Shadow>
 
             <VerticalStackLayout Spacing="12">
-                <!-- Top Row: Title + Heart & Info Actions -->
+                <!-- Top Row: Address Selector ("Deliver to...") + Heart & Cart/Info Actions -->
                 <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" VerticalOptions="Center">
-                    <Label Grid.Column="0"
-                           Text="Explore Shops"
-                           FontSize="22"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource TextWhite}"
-                           VerticalOptions="Center" />
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="Deliver to"
+                               FontSize="11"
+                               TextColor="#D2ECD8" />
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                            <Label Text="📍 742 Evergreen Terrace..."
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextWhite}"
+                                   MaxLines="1"
+                                   LineBreakMode="TailTruncation" />
+                            <Label Text="▾"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextWhite}"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
 
                     <!-- Heart / Favorites Button -->
                     <Border Grid.Column="1"
@@ -83,7 +96,7 @@
                                VerticalOptions="Center" />
                         <Entry x:Name="SearchAddressEntry"
                                Grid.Column="1"
-                               Placeholder="Search Address..."
+                               Placeholder="Search groceries, stores, produce..."
                                PlaceholderColor="{StaticResource TextMuted}"
                                FontSize="13"
                                TextColor="{StaticResource TextPrimary}"
@@ -109,7 +122,7 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="16,14,16,24" Spacing="16">
 
-                <!-- ── Banner Card: "Fresh Delivery to Your Door" ── -->
+                <!-- ── Hero Promo Banner Card: "Fresh Delivery to Your Door" ── -->
                 <Border BackgroundColor="{StaticResource BrandGreenMid}"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 18"
@@ -298,21 +311,25 @@
                                                    FontAttributes="Bold"
                                                    TextColor="{StaticResource TextWhite}" />
                                             <!-- 5 Yellow Rating Stars -->
-                                            <Label Text="★★★★★"
-                                                   FontSize="9"
-                                                   TextColor="#F59E0B" />
+                                            <HorizontalStackLayout Spacing="1">
+                                                <Label Text="★★★★★"
+                                                       FontSize="11"
+                                                       TextColor="{StaticResource AccentAmber}" />
+                                                <Label Text="{Binding Rating, StringFormat=' {0:F1}'}"
+                                                       FontSize="10"
+                                                       TextColor="{StaticResource TextWhite}" />
+                                            </HorizontalStackLayout>
                                         </VerticalStackLayout>
 
-                                        <!-- Delivery Minutes Badge -->
+                                        <!-- Delivery Time Pill Badge -->
                                         <Border Grid.Column="1"
-                                                BackgroundColor="#441E6B39"
-                                                StrokeThickness="1"
-                                                Stroke="{StaticResource BrandGreenBadge}"
-                                                StrokeShape="RoundRectangle 6"
-                                                Padding="6,2"
-                                                VerticalOptions="Center">
-                                            <Label Text="{Binding DeliveryMinutes, StringFormat='{0}'}"
-                                                   FontSize="10"
+                                                BackgroundColor="{StaticResource BrandGreen}"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 10"
+                                                Padding="6,3"
+                                                VerticalOptions="End">
+                                            <Label Text="{Binding DeliveryTime}"
+                                                   FontSize="9"
                                                    FontAttributes="Bold"
                                                    TextColor="{StaticResource TextWhite}" />
                                         </Border>
@@ -342,7 +359,7 @@
                     </Label>
                 </Grid>
 
-                <!-- 2-Column Popular Deals Grid -->
+                <!-- 2-Column Product Grid -->
                 <CollectionView x:Name="PopularDealsCollectionView"
                                 SelectionMode="None">
                     <CollectionView.ItemsLayout>
@@ -356,22 +373,22 @@
                             <Border BackgroundColor="{StaticResource CardBg}"
                                     StrokeThickness="1"
                                     Stroke="{StaticResource CardBorder}"
-                                    StrokeShape="RoundRectangle 14"
+                                    StrokeShape="RoundRectangle 16"
                                     Padding="10">
                                 <Border.Shadow>
-                                    <Shadow Brush="#12000000" Offset="0,2" Radius="8" Opacity="0.6" />
+                                    <Shadow Brush="#10000000" Offset="0,2" Radius="6" Opacity="0.6" />
                                 </Border.Shadow>
 
-                                <VerticalStackLayout Spacing="6">
+                                <VerticalStackLayout Spacing="6" VerticalOptions="FillAndExpand">
                                     <!-- Product Image Container -->
                                     <Border BackgroundColor="#F8FAFC"
                                             StrokeThickness="0"
-                                            StrokeShape="RoundRectangle 10"
-                                            HeightRequest="100"
+                                            StrokeShape="RoundRectangle 12"
+                                            HeightRequest="105"
                                             Padding="0">
                                         <Image Source="{Binding ImageUrl}"
                                                Aspect="AspectFill"
-                                               HeightRequest="100" />
+                                               HeightRequest="105" />
                                     </Border>
 
                                     <!-- Product Name -->
@@ -382,7 +399,12 @@
                                            MaxLines="1"
                                            LineBreakMode="TailTruncation" />
 
-                                    <!-- Price and Green + Add Action -->
+                                    <!-- Weight / Unit -->
+                                    <Label Text="{Binding Weight}"
+                                           FontSize="11"
+                                           TextColor="{StaticResource TextSecondary}" />
+
+                                    <!-- Price and Add Button Row -->
                                     <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
                                         <Label Grid.Column="0"
                                                Text="{Binding Price, StringFormat='${0:F2}'}"

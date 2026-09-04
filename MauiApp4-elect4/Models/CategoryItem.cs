@@ -4,12 +4,13 @@ using System.Runtime.CompilerServices;
 namespace MauiApp4_elect4.Models
 {
     /// <summary>
-    /// Represents a category filter pill with dynamic selection state for data binding.
+    /// Represents a category item for horizontal filter pills or category icon cards.
     /// </summary>
     public class CategoryItem : INotifyPropertyChanged
     {
         private string _name = string.Empty;
         private string _icon = string.Empty;
+        private string _imageUrl = string.Empty;
         private bool _isSelected;
 
         public string Name
@@ -38,6 +39,19 @@ namespace MauiApp4_elect4.Models
             }
         }
 
+        public string ImageUrl
+        {
+            get => _imageUrl;
+            set
+            {
+                if (_imageUrl != value)
+                {
+                    _imageUrl = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public bool IsSelected
         {
             get => _isSelected;
@@ -54,10 +68,10 @@ namespace MauiApp4_elect4.Models
             }
         }
 
-        // Helper UI binding properties
-        public Color BackgroundColor => IsSelected ? Color.FromArgb("#FF6B4A") : Color.FromArgb("#22262B");
-        public Color TextColor => IsSelected ? Colors.White : Color.FromArgb("#8A94A6");
-        public Color BorderColor => IsSelected ? Color.FromArgb("#FF6B4A") : Color.FromArgb("#2C323B");
+        // Helper UI binding properties adapted to Forest Green theme
+        public Color BackgroundColor => IsSelected ? Color.FromArgb("#1E6B39") : Color.FromArgb("#FFFFFF");
+        public Color TextColor => IsSelected ? Colors.White : Color.FromArgb("#1A202C");
+        public Color BorderColor => IsSelected ? Color.FromArgb("#1E6B39") : Color.FromArgb("#E2E8F0");
 
         public string DisplayText => string.IsNullOrEmpty(Icon) ? Name : $"{Icon} {Name}";
 

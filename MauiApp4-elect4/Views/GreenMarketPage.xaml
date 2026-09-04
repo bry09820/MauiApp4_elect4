@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp4_elect4.Views.GreenMarketPage"
+             Title="GreenMarket"
+             BackgroundColor="{StaticResource PageBg}"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="True">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- ══ 1 · HERO HEADER IMAGE WITH DARK GRADIENT OVERLAY ══ -->
+        <Grid Grid.Row="0" HeightRequest="190">
+            <!-- Supermarket Aisle Hero Image -->
+            <Image Source="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800&amp;auto=format&amp;fit=crop&amp;q=80"
+                   Aspect="AspectFill"
+                   HorizontalOptions="Fill"
+                   VerticalOptions="Fill" />
+
+            <!-- Dark Translucent Overlay -->
+            <BoxView Color="#66000000" />
+
+            <!-- Top Navigation Actions (Back Arrow + Title + Heart Icon) -->
+            <Grid ColumnDefinitions="Auto,*,Auto"
+                  Padding="16,16,16,0"
+                  VerticalOptions="Start">
+
+                <!-- Back Arrow Button -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#55000000"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="40"
+                        HeightRequest="40">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="←"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextWhite}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <!-- Page Title -->
+                <Label Grid.Column="1"
+                       x:Name="StoreTitleLabel"
+                       Text="GreenMarket"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextWhite}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+
+                <!-- Bookmark / Heart Action -->
+                <Border Grid.Column="2"
+                        BackgroundColor="#55000000"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="40"
+                        HeightRequest="40">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnStoreBookmarkTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="◇"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextWhite}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ══ 2 · FOREST GREEN HORIZONTAL TAB BAR ══════════════ -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource BrandGreenDark}"
+                StrokeThickness="0"
+                Padding="0"
+                HeightRequest="48">
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout Spacing="6" Padding="12,0" VerticalOptions="Center">
+
+                    <!-- Featured Tab (Active) -->
+                    <Button x:Name="TabFeatured"
+                            Text="Featured"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource TextWhite}"
+                            FontAttributes="Bold"
+                            FontSize="13"
+                            Padding="12,6"
+                            HeightRequest="38"
+                            Clicked="OnTabClicked" />
+
+                    <!-- Groceries Tab -->
+                    <Button x:Name="TabGroceries"
+                            Text="Groceries"
+                            BackgroundColor="Transparent"
+                            TextColor="#B0D5BC"
+                            FontSize="13"
+                            Padding="12,6"
+                            HeightRequest="38"
+                            Clicked="OnTabClicked" />
+
+                    <!-- Beverages Tab -->
+                    <Button x:Name="TabBeverages"
+                            Text="Beverages"
+                            BackgroundColor="Transparent"
+                            TextColor="#B0D5BC"
+                            FontSize="13"
+                            Padding="12,6"
+                            HeightRequest="38"
+                            Clicked="OnTabClicked" />
+
+                    <!-- Bakery Tab -->
+                    <Button x:Name="TabBakery"
+                            Text="Bakery"
+                            BackgroundColor="Transparent"
+                            TextColor="#B0D5BC"
+                            FontSize="13"
+                            Padding="12,6"
+                            HeightRequest="38"
+                            Clicked="OnTabClicked" />
+
+                </HorizontalStackLayout>
+            </ScrollView>
+        </Border>
+
+        <!-- ══ 3 · SCROLLABLE PRODUCT SECTIONS ═════════════════ -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="16,14,16,24" Spacing="16">
+
+                <!-- ── Section 1: "Fresh Vegetables" ── -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="Fresh Vegetables"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="See All &gt;"
+                           FontSize="12"
+                           TextColor="{StaticResource TextSecondary}"
+                           VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSeeAllVegTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+
+                <!-- Horizontal Vegetable Product Cards -->
+                <CollectionView x:Name="VegetablesCollectionView"
+                                HeightRequest="195"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border WidthRequest="126"
+                                    HeightRequest="190"
+                                    BackgroundColor="{StaticResource CardBg}"
+                                    StrokeThickness="1"
+                                    Stroke="{StaticResource CardBorder}"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="8">
+                                <Border.Shadow>
+                                    <Shadow Brush="#10000000" Offset="0,2" Radius="6" Opacity="0.6" />
+                                </Border.Shadow>
+
+                                <VerticalStackLayout Spacing="6" VerticalOptions="FillAndExpand">
+                                    <!-- Product Thumbnail -->
+                                    <Border BackgroundColor="#F8FAFC"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            HeightRequest="90"
+                                            Padding="0">
+                                        <Image Source="{Binding ImageUrl}"
+                                               Aspect="AspectFill"
+                                               HeightRequest="90" />
+                                    </Border>
+
+                                    <!-- Product Title -->
+                                    <Label Text="{Binding Name}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           MaxLines="1"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <!-- Price & Green Add Button -->
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Price, StringFormat='${0:F2}'}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               VerticalOptions="Center" />
+
+                                        <!-- Green Add Button -->
+                                        <Button Grid.Column="1"
+                                                Text="Add"
+                                                Style="{StaticResource BtnAddSmall}"
+                                                Padding="8,0"
+                                                HeightRequest="28"
+                                                FontSize="11"
+                                                CommandParameter="{Binding .}"
+                                                Clicked="OnAddToCartClicked" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- ── Section 2: "Bestsellers" ── -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Label Grid.Column="0"
+                           Text="Bestsellers"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="See All &gt;"
+                           FontSize="12"
+                           TextColor="{StaticResource TextSecondary}"
+                           VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSeeAllBestsellersTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+
+                <!-- 2-Column Bestsellers Grid -->
+                <CollectionView x:Name="BestsellersCollectionView"
+                                SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"
+                                         Span="2"
+                                         HorizontalItemSpacing="10"
+                                         VerticalItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="{StaticResource CardBg}"
+                                    StrokeThickness="1"
+                                    Stroke="{StaticResource CardBorder}"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="10">
+                                <Border.Shadow>
+                                    <Shadow Brush="#10000000" Offset="0,2" Radius="8" Opacity="0.6" />
+                                </Border.Shadow>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <!-- Product Thumbnail -->
+                                    <Border BackgroundColor="#F8FAFC"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            HeightRequest="100"
+                                            Padding="0">
+                                        <Image Source="{Binding ImageUrl}"
+                                               Aspect="AspectFill"
+                                               HeightRequest="100" />
+                                    </Border>
+
+                                    <!-- Product Title -->
+                                    <Label Text="{Binding Name}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           MaxLines="1"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <!-- Price & Green + Add Action -->
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Price, StringFormat='${0:F2}'}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               VerticalOptions="Center" />
+
+                                        <!-- Green + Add Button -->
+                                        <Button Grid.Column="1"
+                                                Text="+ Add"
+                                                Style="{StaticResource BtnAddSmall}"
+                                                CommandParameter="{Binding .}"
+                                                Clicked="OnAddToCartClicked" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

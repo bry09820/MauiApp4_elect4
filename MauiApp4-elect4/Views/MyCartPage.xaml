@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:MauiApp4_elect4.Models"
-             x:Class="MauiApp4_elect4.Views.CartPage"
+             x:Class="MauiApp4_elect4.Views.MyCartPage"
              Title="My Cart"
              BackgroundColor="{StaticResource PageBg}"
              Shell.NavBarIsVisible="False"
@@ -189,7 +189,7 @@
                                                          HorizontalOptions="End"
                                                          Spacing="6">
 
-                                        <!-- Dynamic Formatted Subtotal -->
+                                        <!-- Dynamic Formatted Subtotal / Price -->
                                         <Label Text="{Binding FormattedSubtotal}"
                                                FontSize="15"
                                                FontAttributes="Bold"

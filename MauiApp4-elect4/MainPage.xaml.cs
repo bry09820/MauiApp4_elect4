@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using MauiApp4_elect4.Models;
 using MauiApp4_elect4.Services;
 using MauiApp4_elect4.Views;
@@ -7,236 +6,124 @@ using MauiApp4_elect4.Views;
 namespace MauiApp4_elect4
 {
     /// <summary>
-    /// Product catalogue page — search, category filtering, sort options, and add-to-cart.
-    /// Hardware-accelerated with GPU ScaleToAsync() micro-interactions and async data filtering.
+    /// Explore Shops page — header address bar, promo delivery banner, categories,
+    /// top vendors, and popular grocery deals.
     /// </summary>
     public partial class MainPage : ContentPage
     {
-        // ── Services ─────────────────────────────────────────────────────────
-        private readonly MockDataService    _dataService    = new();
-        private readonly CartService        _cartService    = CartService.Instance;
-        private readonly UserProfileService _profileService = UserProfileService.Instance;
+        private readonly MockDataService _dataService = new();
+        private readonly CartService _cartService = CartService.Instance;
 
-        // ── Category collection for dynamic data binding ──────────────────────
-        private readonly ObservableCollection<CategoryItem> _categories =
-        [
-            new CategoryItem { Name = "All", Icon = "🔥", IsSelected = true },
-            new CategoryItem { Name = "Dairy", Icon = "🥛", IsSelected = false },
-            new CategoryItem { Name = "Bakery", Icon = "🥖", IsSelected = false },
-            new CategoryItem { Name = "Fruits", Icon = "🍎", IsSelected = false },
-            new CategoryItem { Name = "Beverages", Icon = "🧃", IsSelected = false }
-        ];
+        private List<Vendor> _allVendors = [];
+        private List<Product> _allDeals = [];
 
-        // ── Filter state ─────────────────────────────────────────────────────
-        private string _selectedCategory = "All";
-        private string _searchText       = string.Empty;
-        private string _activeSortOption = "Default";
-
-        // ── Constructor ──────────────────────────────────────────────────────
         public MainPage()
         {
             InitializeComponent();
-            CategoryCollectionView.ItemsSource = _categories;
-            _cartService.CartItems.CollectionChanged += OnCartCollectionChanged;
+            LoadData();
         }
 
-        private void OnCartCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            MainThread.BeginInvokeOnMainThread(RefreshCartBadge);
-        }
-
-        // ── Lifecycle ────────────────────────────────────────────────────────
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            LoadData();
+        }
 
+        private void LoadData()
+        {
             try
             {
-                // Refresh product list and badge every time the page appears
-                RefreshProductsAsync();
-                RefreshCartBadge();
+                _allVendors = _dataService.GetTopVendors();
+                _allDeals = _dataService.GetPopularDeals();
+
+                TopVendorsCollectionView.ItemsSource = _allVendors;
+                PopularDealsCollectionView.ItemsSource = _allDeals;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] OnAppearing error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MainPage] LoadData error: {ex.Message}");
             }
         }
 
-        // ── Shared animation helper ───────────────────────────────────────────
-
-        private static async Task PressPopAsync(VisualElement el,
-                                                double scale  = 0.90,
-                                                uint   downMs = 45,
-                                                uint   upMs   = 70)
+        // ── Shared micro-animation ───────────────────────────────────────────
+        private static async Task PressPopAsync(VisualElement el, double scale = 0.92, uint downMs = 45, uint upMs = 65)
         {
             await el.ScaleToAsync(scale, downMs, Easing.CubicIn);
-            await el.ScaleToAsync(1.0,   upMs,   Easing.SpringOut);
+            await el.ScaleToAsync(1.0, upMs, Easing.SpringOut);
         }
 
-        // ── Product loading & filtering ───────────────────────────────────────
-
-        /// <summary>Queries the service asynchronously with current filter/sort state.</summary>
-        private async void RefreshProductsAsync()
+        // ── Top Header Actions ────────────────────────────────────────────────
+        private async void OnFavoritesTapped(object? sender, TappedEventArgs e)
         {
             try
             {
-                string cat = _selectedCategory;
-                string search = _searchText;
-                string sort = _activeSortOption;
-
-                // Offload filtering & sorting to worker thread for 60-90 FPS UI fluidity
-                var products = await Task.Run(() =>
-                {
-                    var list = _dataService.GetFilteredProducts(cat, search);
-                    return sort switch
-                    {
-                        "PriceLowHigh" => list.OrderBy(p => p.Price).ToList(),
-                        "PriceHighLow" => list.OrderByDescending(p => p.Price).ToList(),
-                        "NameAZ"       => list.OrderBy(p => p.Name).ToList(),
-                        _              => list
-                    };
-                });
-
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    ProductsCollectionView.ItemsSource = products;
-                });
+                if (sender is VisualElement el) await PressPopAsync(el);
+                await DisplayAlertAsync("Favorites", "You have 4 favorite stores and 12 saved items.", "OK");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] RefreshProducts error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MainPage] Favorites error: {ex.Message}");
             }
         }
 
-        // ── Cart badge ───────────────────────────────────────────────────────
-        private void RefreshCartBadge()
+        private async void OnInfoTapped(object? sender, TappedEventArgs e)
         {
             try
             {
-                int count = _cartService.GetTotalItemCount();
-                CartButton.Text = count > 0
-                    ? $"🛒  {count}"
-                    : "🛒  0";
+                if (sender is VisualElement el) await PressPopAsync(el);
+                await DisplayAlertAsync(
+                    "Store Info & Express Delivery",
+                    "🌿 FreshMart Green Delivery Network\n• 15-30 min express dispatch\n• 100% organic farm certified\n• Free delivery on orders above $25",
+                    "Got It");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] RefreshCartBadge error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MainPage] Info error: {ex.Message}");
             }
         }
 
-        // ── Interactive Header Elements ───────────────────────────────────────
-
-        private async void OnLocationTapped(object? sender, TappedEventArgs e)
+        private async void OnAddressPinTapped(object? sender, TappedEventArgs e)
         {
             try
             {
-                if (sender is VisualElement el) await PressPopAsync(el, scale: 0.95, downMs: 40, upMs: 65);
-
-                var p = _profileService.Profile;
-                var addressOptions = p.SavedAddresses.ToList();
-                addressOptions.Add("📍 Use Current GPS Location");
+                if (sender is VisualElement el) await PressPopAsync(el);
 
                 string action = await DisplayActionSheetAsync(
-                    "📍 Select Delivery Location",
+                    "📍 Select Delivery Address",
                     "Cancel",
                     null,
-                    addressOptions.ToArray());
+                    "📍 742 Evergreen Terrace, Springfield",
+                    "🏢 Office: 100 Market St, Suite 400",
+                    "🏠 Home: 25 Green Valley Road",
+                    "🛰️ Use Current GPS Location");
 
-                if (string.IsNullOrEmpty(action) || action == "Cancel") return;
-
-                if (action == "📍 Use Current GPS Location")
+                if (!string.IsNullOrEmpty(action) && action != "Cancel")
                 {
-                    CurrentLocationLabel.Text = "Current GPS ▾";
-                    await DisplayAlertAsync("Location Set", "Delivering to your current GPS coordinates (Fast dispatch active).", "OK");
-                }
-                else
-                {
-                    p.DefaultAddress = action;
-                    CurrentLocationLabel.Text = "Saved Address ▾";
-                    await DisplayAlertAsync("Location Set", $"Delivery location updated to:\n{action}", "OK");
+                    SearchAddressEntry.Text = action.Replace("📍 ", "").Replace("🏢 ", "").Replace("🏠 ", "");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] LocationTap error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MainPage] Pin error: {ex.Message}");
             }
         }
-
-        private async void OnNotificationBellTapped(object? sender, TappedEventArgs e)
-        {
-            try
-            {
-                if (NotificationBellBorder != null)
-                    await PressPopAsync(NotificationBellBorder, scale: 0.88, downMs: 45, upMs: 70);
-
-                var recentOrders = _profileService.GetMyOrders();
-                if (recentOrders.Count > 0)
-                {
-                    var latest = recentOrders.First();
-                    await DisplayAlertAsync(
-                        "🔔 Order Status Update",
-                        $"Order #{latest.Id} is currently '{latest.Status}'!\n" +
-                        $"Delivery scheduled for {latest.ScheduledDeliveryDate:ddd, hh:mm tt}.\n\n" +
-                        "🔥 Promo: Use 'SAVE20' for 20% off your next order!",
-                        "OK");
-                }
-                else
-                {
-                    await DisplayAlertAsync(
-                        "🔔 FreshMart Notifications",
-                        "No active deliveries at the moment.\n\n" +
-                        "🎉 Exclusive Offer: Use promo code 'FREESHIP' for free delivery on your first order!",
-                        "Got It");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] Notification error: {ex.Message}");
-            }
-        }
-
-        private async void OnFilterIconTapped(object? sender, TappedEventArgs e)
-        {
-            try
-            {
-                if (FilterOptionsBorder != null)
-                    await PressPopAsync(FilterOptionsBorder, scale: 0.88, downMs: 45, upMs: 70);
-
-                string action = await DisplayActionSheetAsync(
-                    "⊞ Sort Dishes & Groceries",
-                    "Cancel",
-                    null,
-                    "🌟 Featured / Recommended",
-                    "💵 Price: Low to High",
-                    "💎 Price: High to Low",
-                    "🔤 Name: A to Z");
-
-                if (string.IsNullOrEmpty(action) || action == "Cancel") return;
-
-                _activeSortOption = action switch
-                {
-                    "💵 Price: Low to High" => "PriceLowHigh",
-                    "💎 Price: High to Low" => "PriceHighLow",
-                    "🔤 Name: A to Z"        => "NameAZ",
-                    _                       => "Default"
-                };
-
-                RefreshProductsAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] FilterIcon error: {ex.Message}");
-            }
-        }
-
-        // ── Event handlers ───────────────────────────────────────────────────
 
         private void OnSearchTextChanged(object? sender, TextChangedEventArgs e)
         {
             try
             {
-                _searchText = e.NewTextValue ?? string.Empty;
-                RefreshProductsAsync();
+                string query = e.NewTextValue?.Trim() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    PopularDealsCollectionView.ItemsSource = _allDeals;
+                }
+                else
+                {
+                    PopularDealsCollectionView.ItemsSource = _allDeals
+                        .Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                    p.Category.Contains(query, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -244,84 +131,92 @@ namespace MauiApp4_elect4
             }
         }
 
-        private async void OnCategoryPillClicked(object? sender, EventArgs e)
+        // ── Category Card Navigation ──────────────────────────────────────────
+        private async void OnCategoryCardTapped(object? sender, TappedEventArgs e)
         {
             try
             {
-                if (sender is Button btn && btn.CommandParameter is CategoryItem item)
+                if (sender is VisualElement el) await PressPopAsync(el);
+
+                string category = e.Parameter?.ToString() ?? "All";
+                await Shell.Current.GoToAsync($"{nameof(GreenMarketPage)}?category={Uri.EscapeDataString(category)}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MainPage] Category error: {ex.Message}");
+            }
+        }
+
+        // ── Vendor Card Navigation ────────────────────────────────────────────
+        private async void OnVendorCardTapped(object? sender, TappedEventArgs e)
+        {
+            try
+            {
+                if (sender is VisualElement el) await PressPopAsync(el);
+
+                if (e.Parameter is Vendor vendor)
                 {
-                    await PressPopAsync(btn, scale: 0.88, downMs: 40, upMs: 65);
-
-                    _selectedCategory = item.Name;
-                    foreach (var c in _categories)
-                    {
-                        c.IsSelected = (c.Name == item.Name);
-                    }
-
-                    RefreshProductsAsync();
+                    await Shell.Current.GoToAsync($"{nameof(GreenMarketPage)}?vendorName={Uri.EscapeDataString(vendor.Name)}");
+                }
+                else
+                {
+                    await Shell.Current.GoToAsync(nameof(GreenMarketPage));
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] CategoryPill error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MainPage] Vendor click error: {ex.Message}");
             }
         }
 
+        private async void OnSeeAllVendorsTapped(object? sender, TappedEventArgs e)
+        {
+            try
+            {
+                if (sender is VisualElement el) await PressPopAsync(el);
+                await Shell.Current.GoToAsync(nameof(GreenMarketPage));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MainPage] SeeAllVendors error: {ex.Message}");
+            }
+        }
+
+        private async void OnSeeAllDealsTapped(object? sender, TappedEventArgs e)
+        {
+            try
+            {
+                if (sender is VisualElement el) await PressPopAsync(el);
+                await Shell.Current.GoToAsync(nameof(GreenMarketPage));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MainPage] SeeAllDeals error: {ex.Message}");
+            }
+        }
+
+        // ── Add to Cart ───────────────────────────────────────────────────────
         private async void OnAddToCartClicked(object? sender, EventArgs e)
         {
             try
             {
                 if (sender is Button btn && btn.CommandParameter is Product product)
                 {
-                    await PressPopAsync(btn, scale: 0.85, downMs: 40, upMs: 65);
+                    await PressPopAsync(btn, scale: 0.85, downMs: 35, upMs: 55);
 
                     _cartService.AddToCart(product);
-                    RefreshCartBadge();
+
+                    // Quick visual feedback
+                    btn.Text = "✓ Added";
+                    btn.BackgroundColor = Color.FromArgb("#2B7A4B");
+                    await Task.Delay(800);
+                    btn.Text = "+ Add";
+                    btn.BackgroundColor = Color.FromArgb("#1E6B39");
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[MainPage] AddToCart error: {ex.Message}");
-            }
-        }
-
-        private async void OnCartButtonClicked(object? sender, EventArgs e)
-        {
-            try
-            {
-                if (sender is VisualElement el)
-                    await PressPopAsync(el, scale: 0.92, downMs: 45, upMs: 65);
-
-                await Shell.Current.GoToAsync(nameof(CartPage));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] CartNav error: {ex.Message}");
-            }
-        }
-
-        private async void OnClearSearchClicked(object? sender, EventArgs e)
-        {
-            try
-            {
-                if (sender is VisualElement el)
-                    await PressPopAsync(el, scale: 0.92, downMs: 45, upMs: 65);
-
-                _searchText       = string.Empty;
-                _selectedCategory = "All";
-                _activeSortOption = "Default";
-                ProductSearchBar.Text = string.Empty;
-
-                foreach (var c in _categories)
-                {
-                    c.IsSelected = (c.Name == "All");
-                }
-
-                RefreshProductsAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] ClearSearch error: {ex.Message}");
             }
         }
     }

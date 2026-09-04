@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Meteor Debugger",
+      "type": "dotnet-meteor.debugger",
+      "request": "launch",
+      "preLaunchTask": "dotnet-meteor: Build"
+    },
+    {
+      "name": ".NET MAUI: Android",
+      "type": "maui",
+      "request": "launch",
+      "project": "${workspaceFolder}/MauiApp4-elect4/MauiApp4-elect4.csproj"
+    },
+    {
+      "name": ".NET Meteor: Attach",
+      "type": "dotnet-meteor.debugger",
+      "request": "attach"
+    }
+  ]
+}

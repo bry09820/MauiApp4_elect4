@@ -7,56 +7,60 @@
     xmlns:views="clr-namespace:MauiApp4_elect4.Views"
     Title="FreshMart"
     Shell.NavBarIsVisible="False"
-    Shell.TabBarBackgroundColor="#121417"
-    Shell.TabBarForegroundColor="#FF6B4A"
-    Shell.TabBarUnselectedColor="#8A94A6"
-    Shell.TabBarTitleColor="#FF6B4A">
+    Shell.TabBarIsVisible="True"
+    Shell.TabBarBackgroundColor="#FFFFFF"
+    Shell.TabBarForegroundColor="#1E6B39"
+    Shell.TabBarUnselectedColor="#8E8E93"
+    Shell.TabBarTitleColor="#1E6B39">
 
     <!-- ═══════════════════════════════════════════════════════════
-         TAB BAR  ·  Five persistent bottom-navigation tabs
-         Navigation flow:
-           Catalog  →  Cart  →  (CheckoutPage via push)
-           Profile  →  order history
-           Admin    →  Products / Orders / Analytics
-           Reports  →  full analytics dashboard
+         CUSTOMER BOTTOM NAVIGATION TAB BAR
+         Forest Green Theme (#1E6B39) · Neutral Grey (#8E8E93)
+         1 · Home       (ExploreShopsPage)
+         2 · Categories (GreenMarketPage)
+         3 · Cart       (MyCartPage)
+         4 · Orders     (OrdersPage)
+         5 · Profile    (AccountPage)
          ═══════════════════════════════════════════════════════════ -->
     <TabBar>
 
-        <!-- 1 · Product Catalog ──────────────────────────────── -->
+        <!-- 1 · Home ───────────────────────────────────────────── -->
         <ShellContent
-            Title="Catalog"
-            Icon="dotnet_bot.png"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage" />
+            Title="Home"
+            Icon="tab_home.png"
+            ContentTemplate="{DataTemplate views:ExploreShopsPage}"
+            Route="ExploreShopsPage" />
 
-        <!-- 2 · Shopping Cart ───────────────────────────────── -->
+        <!-- 2 · Categories ─────────────────────────────────────── -->
+        <ShellContent
+            Title="Categories"
+            Icon="tab_categories.png"
+            ContentTemplate="{DataTemplate views:GreenMarketPage}"
+            Route="GreenMarketPage" />
+
+        <!-- 3 · Cart ───────────────────────────────────────────── -->
         <ShellContent
             Title="Cart"
-            Icon="dotnet_bot.png"
-            ContentTemplate="{DataTemplate views:CartPage}"
-            Route="CartPage" />
+            Icon="tab_cart.png"
+            ContentTemplate="{DataTemplate views:MyCartPage}"
+            Route="MyCartPage" />
 
-        <!-- 3 · My Profile + Order History ─────────────────── -->
+        <!-- 4 · Orders ─────────────────────────────────────────── -->
+        <ShellContent
+            Title="Orders"
+            Icon="tab_orders.png"
+            ContentTemplate="{DataTemplate views:OrdersPage}"
+            Route="OrdersPage" />
+
+        <!-- 5 · Profile ────────────────────────────────────────── -->
         <ShellContent
             Title="Profile"
-            Icon="dotnet_bot.png"
-            ContentTemplate="{DataTemplate views:ProfilePage}"
-            Route="ProfilePage" />
-
-        <!-- 4 · Admin Dashboard (Products / Orders / Analytics) -->
-        <ShellContent
-            Title="Admin"
-            Icon="dotnet_bot.png"
-            ContentTemplate="{DataTemplate views:AdminDashboardPage}"
-            Route="AdminDashboardPage" />
-
-        <!-- 5 · Full Sales Analytics / Reports ─────────────── -->
-        <ShellContent
-            Title="Reports"
-            Icon="dotnet_bot.png"
-            ContentTemplate="{DataTemplate views:ReportsPage}"
-            Route="ReportsPage" />
+            Icon="tab_profile.png"
+            ContentTemplate="{DataTemplate views:AccountPage}"
+            Route="AccountPage" />
 
     </TabBar>
 
 </Shell>
+
+

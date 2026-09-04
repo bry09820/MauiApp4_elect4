@@ -40,7 +40,7 @@
                             Padding="12,10"
                             VerticalOptions="Center">
                         <Border.Shadow>
-                            <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="14" Opacity="0.4" />
+                            <Shadow Brush="#4D1E6B39" Offset="0,4" Radius="14" Opacity="0.4" />
                         </Border.Shadow>
                         <Label Text="📈"
                                FontSize="24"

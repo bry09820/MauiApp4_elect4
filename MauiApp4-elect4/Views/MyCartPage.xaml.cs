@@ -3,11 +3,11 @@ using MauiApp4_elect4.ViewModels;
 
 namespace MauiApp4_elect4.Views
 {
-    public partial class CartPage : ContentPage
+    public partial class MyCartPage : ContentPage
     {
         public CartViewModel ViewModel { get; }
 
-        public CartPage()
+        public MyCartPage()
         {
             InitializeComponent();
             ViewModel = new CartViewModel();
@@ -48,7 +48,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[CartPage] Explore nav error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MyCartPage] Explore nav error: {ex.Message}");
             }
         }
 
@@ -65,7 +65,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[CartPage] Increment error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MyCartPage] Increment error: {ex.Message}");
             }
         }
 
@@ -82,7 +82,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[CartPage] Decrement error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MyCartPage] Decrement error: {ex.Message}");
             }
         }
 
@@ -104,7 +104,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[CartPage] Promo error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MyCartPage] Promo error: {ex.Message}");
             }
         }
 
@@ -124,7 +124,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[CartPage] Checkout nav error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MyCartPage] Checkout nav error: {ex.Message}");
             }
         }
     }

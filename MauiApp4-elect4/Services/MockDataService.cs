@@ -4,42 +4,189 @@ using MauiApp4_elect4.Models;
 namespace MauiApp4_elect4.Services
 {
     /// <summary>
-    /// Provides hard-coded sample grocery data for UI prototyping and testing.
-    /// Replace with a real API / database service in production.
+    /// Provides grocery catalogue data, store vendors, deals, and order management.
     /// </summary>
     public class MockDataService
     {
         // ── Category list ────────────────────────────────────────────────────
-        /// <summary>All available filter categories shown in the horizontal pill bar.</summary>
         public static readonly List<string> Categories =
         [
-            "All", "Dairy", "Bakery", "Fruits", "Beverages"
+            "All", "Fruits", "Vegetables", "Dairy", "Snacks", "Bakery", "Beverages"
         ];
 
         // ── Valid order statuses ──────────────────────────────────────────────
-        /// <summary>Ordered list of fulfillment statuses used in the Admin Dashboard picker.</summary>
         public static readonly List<string> OrderStatuses =
         [
-            "Pending", "Processing", "Out for Delivery", "Delivered"
+            "Out for Delivery", "Preparing Order", "Delivered", "Cancelled"
         ];
 
         // ── In-memory order store ─────────────────────────────────────────────
-        /// <summary>
-        /// Shared, observable list of all placed orders.
-        /// Both CheckoutPage (writes) and AdminDashboardPage (reads/updates) use this.
-        /// </summary>
         public static readonly ObservableCollection<Order> Orders = [];
 
-        private static int _nextOrderId = 1;
+        private static int _nextOrderId = 105;
 
-        /// <summary>Persists a new order and auto-assigns its Id.</summary>
+        static MockDataService()
+        {
+            InitializeSampleOrders();
+        }
+
+        public static void InitializeSampleOrders()
+        {
+            if (Orders.Count > 0) return;
+
+            // 1 · Ongoing: GreenMarket (#104)
+            Orders.Add(new Order
+            {
+                Id = 104,
+                VendorName = "GreenMarket",
+                VendorIcon = "🌿",
+                CustomerName = "Alex Rivera",
+                ContactNumber = "+1 (555) 019-2834",
+                ShippingAddress = "742 Evergreen Terrace, Springfield, OR 97477",
+                DeliveryMethod = "Home Delivery",
+                PaymentMethod = "Credit Card",
+                Subtotal = 11.99m,
+                DeliveryFee = 1.09m,
+                TotalAmount = 13.08m,
+                Status = "Out for Delivery",
+                DeliveryStatusText = "Out for Delivery",
+                TabCategory = "Ongoing",
+                Line1Preview = "🥬 Fresh Lettuce, Sourdough Bread",
+                Line2Preview = "🧃 Orange Juice",
+                EstimatedMinutes = 15,
+                CourierName = "Mike Roberts",
+                CourierPhone = "+1 (555) 839-2041",
+                CourierPhotoUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80",
+                Items =
+                [
+                    new CartItem { Product = new Product { Id = 204, Name = "Fresh Lettuce", Category = "Vegetables", Price = 1.99m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=500&auto=format&fit=crop&q=80" }, Quantity = 1 },
+                    new CartItem { Product = new Product { Id = 401, Name = "Sourdough Bread", Category = "Bakery", Price = 1.99m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=500&auto=format&fit=crop&q=80" }, Quantity = 1 },
+                    new CartItem { Product = new Product { Id = 501, Name = "Orange Juice", Category = "Beverages", Price = 1.29m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80" }, Quantity = 1 }
+                ]
+            });
+
+            // 2 · Ongoing: SuperMart (#103)
+            Orders.Add(new Order
+            {
+                Id = 103,
+                VendorName = "SuperMart",
+                VendorIcon = "🏪",
+                CustomerName = "Alex Rivera",
+                ContactNumber = "+1 (555) 019-2834",
+                ShippingAddress = "742 Evergreen Terrace, Springfield, OR 97477",
+                DeliveryMethod = "Home Delivery",
+                PaymentMethod = "Digital Wallet",
+                Subtotal = 19.99m,
+                DeliveryFee = 1.50m,
+                TotalAmount = 21.49m,
+                Status = "Preparing Order",
+                DeliveryStatusText = "Preparing Order",
+                TabCategory = "Ongoing",
+                Line1Preview = "🍞 Whole Grain Bread",
+                Line2Preview = "🥛 Organic Milk",
+                EstimatedMinutes = 25,
+                CourierName = "Carlos Mendez",
+                CourierPhone = "+1 (555) 492-1082",
+                CourierPhotoUrl = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
+                Items =
+                [
+                    new CartItem { Product = new Product { Id = 302, Name = "Whole Grain Bread", Category = "Bakery", Price = 2.99m, Weight = "500g", ImageUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80" }, Quantity = 2 },
+                    new CartItem { Product = new Product { Id = 301, Name = "Organic Milk", Category = "Dairy", Price = 3.99m, Weight = "1.0 L", ImageUrl = "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80" }, Quantity = 3 }
+                ]
+            });
+
+            // 3 · Past: FreshGrocers (#102)
+            Orders.Add(new Order
+            {
+                Id = 102,
+                VendorName = "FreshGrocers",
+                VendorIcon = "🛒",
+                CustomerName = "Alex Rivera",
+                ContactNumber = "+1 (555) 019-2834",
+                ShippingAddress = "742 Evergreen Terrace, Springfield, OR 97477",
+                DeliveryMethod = "Home Delivery",
+                PaymentMethod = "Credit Card",
+                Subtotal = 17.78m,
+                DeliveryFee = 1.09m,
+                TotalAmount = 18.87m,
+                Status = "Delivered",
+                DeliveryStatusText = "Delivered 1 day ago",
+                TabCategory = "Past",
+                Line1Preview = "🥕 Carrot Bag, Organic Eggs",
+                Line2Preview = "🥜 Peanut Butter",
+                EstimatedMinutes = 0,
+                CourierName = "Sara Jenkins",
+                CourierPhone = "+1 (555) 714-3829",
+                CourierPhotoUrl = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80",
+                Items =
+                [
+                    new CartItem { Product = new Product { Id = 202, Name = "Carrot Bag", Category = "Vegetables", Price = 3.49m, Weight = "1.0kg", ImageUrl = "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500&auto=format&fit=crop&q=80" }, Quantity = 2 },
+                    new CartItem { Product = new Product { Id = 102, Name = "Farm Fresh Eggs", Category = "Dairy", Price = 3.99m, Weight = "12 pcs", ImageUrl = "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500&auto=format&fit=crop&q=80" }, Quantity = 2 }
+                ]
+            });
+
+            // 4 · Past: FreshGrocers (#101)
+            Orders.Add(new Order
+            {
+                Id = 101,
+                VendorName = "FreshGrocers",
+                VendorIcon = "🛒",
+                CustomerName = "Alex Rivera",
+                ContactNumber = "+1 (555) 019-2834",
+                ShippingAddress = "742 Evergreen Terrace, Springfield, OR 97477",
+                DeliveryMethod = "Home Delivery",
+                PaymentMethod = "Credit Card",
+                Subtotal = 14.31m,
+                DeliveryFee = 1.09m,
+                TotalAmount = 15.40m,
+                Status = "Delivered",
+                DeliveryStatusText = "Delivered 3 days ago",
+                TabCategory = "Past",
+                Line1Preview = "🍎 Organic Apples, Bananas",
+                Line2Preview = "🥛 Greek Yogurt",
+                EstimatedMinutes = 0,
+                CourierName = "David Kim",
+                CourierPhone = "+1 (555) 902-3841",
+                CourierPhotoUrl = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
+                Items =
+                [
+                    new CartItem { Product = new Product { Id = 101, Name = "Organic Apples", Category = "Fruits", Price = 2.99m, Weight = "1.0kg", ImageUrl = "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&auto=format&fit=crop&q=80" }, Quantity = 2 }
+                ]
+            });
+        }
+
         public static void AddOrder(Order order)
         {
             order.Id = _nextOrderId++;
-            Orders.Add(order);
+            Orders.Insert(0, order);
         }
 
-        /// <summary>Updates the status of an existing order in place.</summary>
+        public static Order GetLatestOrder()
+        {
+            if (Orders.Count == 0) InitializeSampleOrders();
+            return Orders.FirstOrDefault() ?? new Order();
+        }
+
+        public static Order? GetOrderById(int id)
+        {
+            if (Orders.Count == 0) InitializeSampleOrders();
+            return Orders.FirstOrDefault(o => o.Id == id) ?? GetLatestOrder();
+        }
+
+        public static List<Order> GetOrdersByTab(string tab)
+        {
+            if (Orders.Count == 0) InitializeSampleOrders();
+
+            if (tab.Equals("Past", StringComparison.OrdinalIgnoreCase))
+                return Orders.Where(o => o.TabCategory == "Past" || o.Status == "Delivered").ToList();
+
+            if (tab.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                return Orders.Where(o => o.TabCategory == "Cancelled" || o.Status == "Cancelled").ToList();
+
+            // Default: Ongoing
+            return Orders.Where(o => o.TabCategory == "Ongoing" || o.Status == "Out for Delivery" || o.Status == "Preparing Order" || o.Status == "Pending").ToList();
+        }
+
         public static void UpdateOrderStatus(Order order, string newStatus)
         {
             if (order is null || string.IsNullOrWhiteSpace(newStatus)) return;
@@ -47,84 +194,234 @@ namespace MauiApp4_elect4.Services
             if (idx < 0) return;
 
             order.Status = newStatus;
-            // Replace item to force ObservableCollection notification.
             Orders[idx] = order;
         }
 
-        /// <summary>Returns a snapshot list of all current orders.</summary>
         public static List<Order> GetOrders() => [.. Orders];
 
-        /// <summary>
-        /// Resets all mutable application state to the initial demo configuration:
-        /// clears every placed order, resets the auto-increment order ID counter,
-        /// and empties the shopping cart.
-        /// Call this from the Admin dashboard "Reset Application Data" button
-        /// before a fresh presentation run.
-        /// </summary>
         public static void ResetData()
         {
-            // 1. Clear all placed orders
             Orders.Clear();
-            _nextOrderId = 1;
-
-            // 2. Empty the shopping cart
+            _nextOrderId = 105;
+            InitializeSampleOrders();
             CartService.Instance.ClearCart();
         }
 
+        // ── Top Vendors ───────────────────────────────────────────────────────
+        public List<Vendor> GetTopVendors()
+        {
+            return
+            [
+                new Vendor
+                {
+                    Id = 1,
+                    Name = "SuperMart",
+                    Rating = 5.0,
+                    DeliveryMinutes = 10,
+                    Category = "Supermarket",
+                    ImageUrl = "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=500&auto=format&fit=crop&q=80"
+                },
+                new Vendor
+                {
+                    Id = 2,
+                    Name = "FreshGrocers",
+                    Rating = 5.0,
+                    DeliveryMinutes = 10,
+                    Category = "Organic Market",
+                    ImageUrl = "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80"
+                },
+                new Vendor
+                {
+                    Id = 3,
+                    Name = "GreenMarket",
+                    Rating = 4.9,
+                    DeliveryMinutes = 15,
+                    Category = "Fresh Produce",
+                    ImageUrl = "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=500&auto=format&fit=crop&q=80"
+                }
+            ];
+        }
+
+        // ── Popular Deals ─────────────────────────────────────────────────────
+        public List<Product> GetPopularDeals()
+        {
+            return
+            [
+                new Product
+                {
+                    Id = 101,
+                    Name = "Organic Apples",
+                    Category = "Fruits",
+                    Price = 2.99m,
+                    Weight = "1.0kg",
+                    Rating = 4.9,
+                    StockQuantity = 150,
+                    BadgeText = "Deal",
+                    Subtitle = "Crisp & Sweet Fuji",
+                    ImageUrl = "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&auto=format&fit=crop&q=80"
+                },
+                new Product
+                {
+                    Id = 102,
+                    Name = "Farm Fresh Eggs",
+                    Category = "Dairy",
+                    Price = 3.99m,
+                    Weight = "12 pcs",
+                    Rating = 5.0,
+                    StockQuantity = 80,
+                    BadgeText = "+09",
+                    Subtitle = "Cage-free Organic",
+                    ImageUrl = "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500&auto=format&fit=crop&q=80"
+                },
+                new Product
+                {
+                    Id = 103,
+                    Name = "Fresh Strawberries",
+                    Category = "Fruits",
+                    Price = 2.99m,
+                    Weight = "250g",
+                    Rating = 4.8,
+                    StockQuantity = 90,
+                    BadgeText = "-20%",
+                    Subtitle = "Sweet Garden Picked",
+                    ImageUrl = "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500&auto=format&fit=crop&q=80"
+                },
+                new Product
+                {
+                    Id = 104,
+                    Name = "Ripe Hass Avocados",
+                    Category = "Vegetables",
+                    Price = 2.49m,
+                    Weight = "3 pcs",
+                    Rating = 4.9,
+                    StockQuantity = 110,
+                    BadgeText = "Fresh",
+                    Subtitle = "Creamy & Ready",
+                    ImageUrl = "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500&auto=format&fit=crop&q=80"
+                }
+            ];
+        }
+
+        // ── Fresh Vegetables (GreenMarket) ────────────────────────────────────
+        public List<Product> GetFreshVegetables()
+        {
+            return
+            [
+                new Product
+                {
+                    Id = 201,
+                    Name = "Broccoli",
+                    Category = "Vegetables",
+                    Price = 2.99m,
+                    Weight = "500g",
+                    Rating = 4.9,
+                    StockQuantity = 60,
+                    BadgeText = "Fresh",
+                    Subtitle = "Organic Green Crown",
+                    ImageUrl = "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=500&auto=format&fit=crop&q=80"
+                },
+                new Product
+                {
+                    Id = 202,
+                    Name = "Carrot Bag",
+                    Category = "Vegetables",
+                    Price = 3.49m,
+                    Weight = "1.0kg",
+                    Rating = 4.8,
+                    StockQuantity = 85,
+                    BadgeText = "Crisp",
+                    Subtitle = "Farm Root Carrots",
+                    ImageUrl = "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500&auto=format&fit=crop&q=80"
+                },
+                new Product
+                {
+                    Id = 203,
+                    Name = "Cherry Tomato",
+                    Category = "Vegetables",
+                    Price = 1.99m,
+                    Weight = "300g",
+                    Rating = 5.0,
+                    StockQuantity = 120,
+                    BadgeText = "Sweet",
+                    Subtitle = "Vine Ripened Ruby",
+                    ImageUrl = "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80"
+                }
+            ];
+        }
+
+        // ── Bestsellers (GreenMarket) ──────────────────────────────────────────
+        public List<Product> GetBestsellers()
+        {
+            return
+            [
+                new Product
+                {
+                    Id = 301,
+                    Name = "Organic Milk",
+                    Category = "Dairy",
+                    Price = 3.99m,
+                    Weight = "1.0 L",
+                    Rating = 5.0,
+                    StockQuantity = 95,
+                    BadgeText = "Bestseller",
+                    Subtitle = "Whole Pure Farm Milk",
+                    ImageUrl = "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80"
+                },
+                new Product
+                {
+                    Id = 302,
+                    Name = "Whole Grain Bread",
+                    Category = "Bakery",
+                    Price = 2.99m,
+                    Weight = "500g",
+                    Rating = 4.9,
+                    StockQuantity = 45,
+                    BadgeText = "Baked Daily",
+                    Subtitle = "Artisan Stone Oven",
+                    ImageUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80"
+                }
+            ];
+        }
+
         // ── Master product catalogue ─────────────────────────────────────────
-        /// <summary>Returns the full catalogue of grocery products.</summary>
         public List<Product> GetProducts()
         {
             return
             [
-                // ── Dairy ────────────────────────────────────────────────────
-                new Product { Id =  1, Name = "Fresh Full-Cream Milk (1 L)",     Category = "Dairy",     Price = 1.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 120 },
-                new Product { Id =  2, Name = "Low-Fat Milk (2 L)",              Category = "Dairy",     Price = 2.79m,  ImageUrl = "dotnet_bot.png", StockQuantity = 95  },
-                new Product { Id =  3, Name = "Greek Yogurt Plain (500 g)",      Category = "Dairy",     Price = 2.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 85  },
-                new Product { Id =  4, Name = "Strawberry Yogurt (150 g)",       Category = "Dairy",     Price = 1.09m,  ImageUrl = "dotnet_bot.png", StockQuantity = 110 },
-                new Product { Id =  5, Name = "Cheddar Cheese Block (250 g)",    Category = "Dairy",     Price = 3.79m,  ImageUrl = "dotnet_bot.png", StockQuantity = 60  },
-                new Product { Id =  6, Name = "Mozzarella Shredded (200 g)",     Category = "Dairy",     Price = 3.29m,  ImageUrl = "dotnet_bot.png", StockQuantity = 75  },
-                new Product { Id =  7, Name = "Salted Butter (250 g)",           Category = "Dairy",     Price = 2.89m,  ImageUrl = "dotnet_bot.png", StockQuantity = 90  },
-                new Product { Id =  8, Name = "Whipping Cream (200 ml)",         Category = "Dairy",     Price = 2.19m,  ImageUrl = "dotnet_bot.png", StockQuantity = 50  },
+                // Fruits
+                new Product { Id = 101, Name = "Organic Apples", Category = "Fruits", Price = 2.99m, Weight = "1.0kg", StockQuantity = 150, ImageUrl = "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 103, Name = "Fresh Strawberries", Category = "Fruits", Price = 2.99m, Weight = "250g", StockQuantity = 90, ImageUrl = "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 105, Name = "Bananas Bundle", Category = "Fruits", Price = 1.49m, Weight = "1.0kg", StockQuantity = 180, ImageUrl = "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 106, Name = "Sweet Oranges", Category = "Fruits", Price = 2.29m, Weight = "1.0kg", StockQuantity = 110, ImageUrl = "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500&auto=format&fit=crop&q=80" },
 
-                // ── Bakery ───────────────────────────────────────────────────
-                new Product { Id =  9, Name = "Whole Wheat Bread (400 g)",       Category = "Bakery",    Price = 2.29m,  ImageUrl = "dotnet_bot.png", StockQuantity = 45  },
-                new Product { Id = 10, Name = "White Sandwich Loaf",             Category = "Bakery",    Price = 1.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 60  },
-                new Product { Id = 11, Name = "Sourdough Loaf (500 g)",          Category = "Bakery",    Price = 3.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 30  },
-                new Product { Id = 12, Name = "Blueberry Muffins (4-pack)",      Category = "Bakery",    Price = 3.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 25  },
-                new Product { Id = 13, Name = "Butter Croissants (2-pack)",      Category = "Bakery",    Price = 2.59m,  ImageUrl = "dotnet_bot.png", StockQuantity = 40  },
-                new Product { Id = 14, Name = "Sesame Bagels (4-pack)",          Category = "Bakery",    Price = 2.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 35  },
-                new Product { Id = 15, Name = "Chocolate Chip Cookies (200 g)",  Category = "Bakery",    Price = 2.79m,  ImageUrl = "dotnet_bot.png", StockQuantity = 55  },
-                new Product { Id = 16, Name = "Cinnamon Rolls (6-pack)",         Category = "Bakery",    Price = 4.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 20  },
+                // Vegetables
+                new Product { Id = 201, Name = "Broccoli", Category = "Vegetables", Price = 2.99m, Weight = "500g", StockQuantity = 60, ImageUrl = "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 202, Name = "Carrot Bag", Category = "Vegetables", Price = 3.49m, Weight = "1.0kg", StockQuantity = 85, ImageUrl = "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 203, Name = "Cherry Tomato", Category = "Vegetables", Price = 1.99m, Weight = "300g", StockQuantity = 120, ImageUrl = "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 204, Name = "Fresh Lettuce", Category = "Vegetables", Price = 1.99m, Weight = "1.0g", StockQuantity = 75, ImageUrl = "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=500&auto=format&fit=crop&q=80" },
 
-                // ── Fruits ───────────────────────────────────────────────────
-                new Product { Id = 17, Name = "Red Apples (1 kg)",               Category = "Fruits",    Price = 1.79m,  ImageUrl = "dotnet_bot.png", StockQuantity = 200 },
-                new Product { Id = 18, Name = "Green Grapes (500 g)",            Category = "Fruits",    Price = 2.39m,  ImageUrl = "dotnet_bot.png", StockQuantity = 130 },
-                new Product { Id = 19, Name = "Bananas (bunch ~6)",              Category = "Fruits",    Price = 0.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 180 },
-                new Product { Id = 20, Name = "Watermelon (whole)",              Category = "Fruits",    Price = 5.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 40  },
-                new Product { Id = 21, Name = "Strawberries (250 g punnet)",     Category = "Fruits",    Price = 2.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 90  },
-                new Product { Id = 22, Name = "Mangoes (2-pack)",                Category = "Fruits",    Price = 3.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 70  },
-                new Product { Id = 23, Name = "Pineapple (whole)",               Category = "Fruits",    Price = 2.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 55  },
-                new Product { Id = 24, Name = "Blueberries (125 g punnet)",      Category = "Fruits",    Price = 3.19m,  ImageUrl = "dotnet_bot.png", StockQuantity = 80  },
+                // Dairy
+                new Product { Id = 102, Name = "Farm Fresh Eggs", Category = "Dairy", Price = 3.99m, Weight = "12 pcs", StockQuantity = 80, ImageUrl = "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 301, Name = "Organic Milk", Category = "Dairy", Price = 3.99m, Weight = "1.0 L", StockQuantity = 95, ImageUrl = "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 303, Name = "Greek Yogurt Plain", Category = "Dairy", Price = 2.49m, Weight = "500g", StockQuantity = 85, ImageUrl = "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 304, Name = "Cheddar Cheese Block", Category = "Dairy", Price = 3.79m, Weight = "250g", StockQuantity = 60, ImageUrl = "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=500&auto=format&fit=crop&q=80" },
 
-                // ── Beverages ────────────────────────────────────────────────
-                new Product { Id = 25, Name = "Still Mineral Water (1.5 L)",     Category = "Beverages", Price = 0.89m,  ImageUrl = "dotnet_bot.png", StockQuantity = 300 },
-                new Product { Id = 26, Name = "Sparkling Water (1 L)",           Category = "Beverages", Price = 1.19m,  ImageUrl = "dotnet_bot.png", StockQuantity = 200 },
-                new Product { Id = 27, Name = "Fresh Orange Juice (1 L)",        Category = "Beverages", Price = 2.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 95  },
-                new Product { Id = 28, Name = "Apple Juice (1 L)",               Category = "Beverages", Price = 2.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 110 },
-                new Product { Id = 29, Name = "Oat Milk (1 L)",                  Category = "Beverages", Price = 2.89m,  ImageUrl = "dotnet_bot.png", StockQuantity = 85  },
-                new Product { Id = 30, Name = "Almond Milk (1 L)",               Category = "Beverages", Price = 3.19m,  ImageUrl = "dotnet_bot.png", StockQuantity = 70  },
-                new Product { Id = 31, Name = "Green Tea (20 bags)",             Category = "Beverages", Price = 2.29m,  ImageUrl = "dotnet_bot.png", StockQuantity = 150 },
-                new Product { Id = 32, Name = "Instant Coffee (200 g jar)",      Category = "Beverages", Price = 4.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 60  },
-                new Product { Id = 33, Name = "Energy Drink (250 ml)",           Category = "Beverages", Price = 1.49m,  ImageUrl = "dotnet_bot.png", StockQuantity = 140 },
-                new Product { Id = 34, Name = "Lemonade Sparkling (330 ml can)", Category = "Beverages", Price = 0.99m,  ImageUrl = "dotnet_bot.png", StockQuantity = 220 },
+                // Bakery
+                new Product { Id = 401, Name = "Sourdough Bread", Category = "Bakery", Price = 1.99m, Weight = "1.0g", StockQuantity = 40, ImageUrl = "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 302, Name = "Whole Grain Bread", Category = "Bakery", Price = 2.99m, Weight = "500g", StockQuantity = 45, ImageUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 402, Name = "Butter Croissants", Category = "Bakery", Price = 2.59m, Weight = "2 pcs", StockQuantity = 35, ImageUrl = "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&auto=format&fit=crop&q=80" },
+
+                // Beverages
+                new Product { Id = 501, Name = "Orange Juice", Category = "Beverages", Price = 1.29m, Weight = "1.0g", StockQuantity = 95, ImageUrl = "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 502, Name = "Still Mineral Water", Category = "Beverages", Price = 0.89m, Weight = "1.5 L", StockQuantity = 300, ImageUrl = "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 503, Name = "Green Tea", Category = "Beverages", Price = 2.29m, Weight = "20 bags", StockQuantity = 150, ImageUrl = "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop&q=80" },
+
+                // Snacks
+                new Product { Id = 601, Name = "Roasted Almonds", Category = "Snacks", Price = 3.99m, Weight = "200g", StockQuantity = 70, ImageUrl = "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=500&auto=format&fit=crop&q=80" },
+                new Product { Id = 602, Name = "Organic Granola Bar", Category = "Snacks", Price = 1.79m, Weight = "6 pcs", StockQuantity = 90, ImageUrl = "https://images.unsplash.com/photo-1622484216806-039c9f28122d?w=500&auto=format&fit=crop&q=80" }
             ];
         }
 
-        /// <summary>
-        /// Filters by category and/or search term.
-        /// Pass <c>null</c> / empty strings to skip each filter.
-        /// </summary>
         public List<Product> GetFilteredProducts(string? category, string? searchTerm)
         {
             var query = GetProducts().AsEnumerable();

@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dotnet-meteor: Build",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/MauiApp4-elect4/MauiApp4-elect4.csproj",
+        "-t:Build",
+        "-f",
+        "net10.0-android",
+        "-c",
+        "Debug"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

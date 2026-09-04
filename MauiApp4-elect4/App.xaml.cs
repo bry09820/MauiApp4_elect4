@@ -11,8 +11,8 @@ namespace MauiApp4_elect4
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            // Show LandingPage first; it swaps to AppShell on "Get Started"
-            return new Window(new Views.LandingPage());
+            // Launch directly into AppShell displaying the forest-green views
+            return new Window(new AppShell());
         }
     }
 }

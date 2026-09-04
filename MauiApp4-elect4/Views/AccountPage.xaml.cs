@@ -3,11 +3,11 @@ using MauiApp4_elect4.ViewModels;
 
 namespace MauiApp4_elect4.Views
 {
-    public partial class ProfilePage : ContentPage
+    public partial class AccountPage : ContentPage
     {
         public AccountViewModel ViewModel { get; }
 
-        public ProfilePage()
+        public AccountPage()
         {
             InitializeComponent();
             ViewModel = new AccountViewModel();
@@ -39,7 +39,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] EditProfile error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] EditProfile error: {ex.Message}");
             }
         }
 
@@ -52,7 +52,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] OrdersNav error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] OrdersNav error: {ex.Message}");
             }
         }
 
@@ -105,7 +105,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] Address error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] Address error: {ex.Message}");
             }
         }
 
@@ -126,7 +126,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] Payment error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] Payment error: {ex.Message}");
             }
         }
 
@@ -139,7 +139,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] AdminNav error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] AdminNav error: {ex.Message}");
             }
         }
 
@@ -156,7 +156,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] Promo error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] Promo error: {ex.Message}");
             }
         }
 
@@ -173,7 +173,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] Support error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] Support error: {ex.Message}");
             }
         }
 
@@ -194,7 +194,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] Settings error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] Settings error: {ex.Message}");
             }
         }
 
@@ -216,7 +216,7 @@ namespace MauiApp4_elect4.Views
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ProfilePage] Logout error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AccountPage] Logout error: {ex.Message}");
             }
         }
     }

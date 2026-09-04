@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:MauiApp4_elect4.Controls"
+             xmlns:vm="clr-namespace:MauiApp4_elect4.ViewModels"
+             x:Class="MauiApp4_elect4.Views.TrackOrderPage"
+             x:DataType="vm:TrackOrderViewModel"
+             Title="Track Order"
+             BackgroundColor="{StaticResource PageBg}"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="True">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ══ 1 · FOREST GREEN TOP HEADER ═════════════════════ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource BrandGreen}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0,0,24,24"
+                Padding="16,14,16,16">
+            <Border.Shadow>
+                <Shadow Brush="#331E6B39" Offset="0,4" Radius="12" Opacity="0.5" />
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                <!-- Back Button -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#2D7F4C"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="40"
+                        HeightRequest="40">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="←"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextWhite}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <!-- Header Title & Order ID -->
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
+                    <Label Text="Track Order"
+                           FontSize="19"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextWhite}"
+                           HorizontalOptions="Center" />
+                    <Label x:Name="OrderIdHeaderLabel"
+                           Text="#104"
+                           FontSize="12"
+                           TextColor="#D2ECD8"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Lock / Status Pill -->
+                <Border Grid.Column="2"
+                        BackgroundColor="#2D7F4C"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 18"
+                        WidthRequest="36"
+                        HeightRequest="36">
+                    <Label Text="🔒"
+                           FontSize="14"
+                           TextColor="{StaticResource TextWhite}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ══ 2 · SCROLLABLE CONTENT BODY ═════════════════════ -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,14,16,24" Spacing="14">
+
+                <!-- ── Order Items Summary Card ── -->
+                <Border BackgroundColor="{StaticResource CardBg}"
+                        StrokeThickness="1"
+                        Stroke="{StaticResource CardBorder}"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="14,12">
+                    <Border.Shadow>
+                        <Shadow Brush="#10000000" Offset="0,2" Radius="6" Opacity="0.5" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="8">
+                        <!-- Items CollectionView -->
+                        <CollectionView x:Name="OrderItemsCollectionView"
+                                        SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="10" Padding="0,4" VerticalOptions="Center">
+                                        <!-- Thumbnail -->
+                                        <Border Grid.Column="0"
+                                                BackgroundColor="#F8FAFC"
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 8"
+                                                WidthRequest="42"
+                                                HeightRequest="42">
+                                            <Image Source="{Binding Product.ImageUrl}"
+                                                   Aspect="AspectFill" />
+                                        </Border>
+
+                                        <!-- Name & Unit -->
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                            <Label Text="{Binding Product.Name}"
+                                                   FontSize="13"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource TextPrimary}" />
+                                            <HorizontalStackLayout Spacing="4">
+                                                <Label Text="✓" FontSize="9" TextColor="{StaticResource BrandGreen}" FontAttributes="Bold" VerticalOptions="Center" />
+                                                <Label Text="{Binding Quantity, StringFormat='{0} - 1.0kg'}"
+                                                       FontSize="10"
+                                                       TextColor="{StaticResource TextSecondary}"
+                                                       VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+
+                                        <!-- Price -->
+                                        <Label Grid.Column="2"
+                                               Text="{Binding Subtotal, StringFormat='${0:F2}'}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource CardBorder}" Margin="0,4" />
+
+                        <!-- Total Amount Row -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Total Amount"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                <Label Text="Total"
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center" />
+                                <Label x:Name="OrderTotalLabel"
+                                       Text="$13.08"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ── Map View Section (Leaflet.js + OpenStreetMap + OpenRouteService) ── -->
+                <VerticalStackLayout Spacing="8">
+                    <!-- Delivery Address Bar & GPS / Search Actions -->
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+                        <Border Grid.Column="0"
+                                BackgroundColor="{StaticResource CardBg}"
+                                StrokeThickness="1"
+                                Stroke="{StaticResource CardBorder}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="10,6">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6" VerticalOptions="Center">
+                                <Label Grid.Column="0" Text="📍" FontSize="14" VerticalOptions="Center" />
+                                <Entry Grid.Column="1"
+                                       x:Name="AddressSearchEntry"
+                                       Text="{Binding ShippingAddress}"
+                                       Placeholder="Search address (Nominatim)..."
+                                       FontSize="12"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextSecondary}"
+                                       VerticalOptions="Center"
+                                       ReturnCommand="{Binding SearchAddressCommand}"
+                                       ReturnCommandParameter="{Binding Source={x:Reference AddressSearchEntry}, Path=Text}" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Recalculate / Search Button -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource BrandGreen}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                WidthRequest="38"
+                                HeightRequest="38">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SearchAddressCommand}"
+                                                      CommandParameter="{Binding Source={x:Reference AddressSearchEntry}, Path=Text}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="🔍"
+                                   FontSize="15"
+                                   TextColor="{StaticResource TextWhite}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <!-- Device GPS Button -->
+                        <Border Grid.Column="2"
+                                BackgroundColor="#E8F5E9"
+                                StrokeThickness="1"
+                                Stroke="{StaticResource BrandGreen}"
+                                StrokeShape="RoundRectangle 12"
+                                WidthRequest="38"
+                                HeightRequest="38">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding UseCurrentLocationCommand}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="🎯"
+                                   FontSize="15"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                    </Grid>
+
+                    <!-- Interactive OpenStreetMap + Leaflet.js Card -->
+                    <Border BackgroundColor="{StaticResource CardBg}"
+                            StrokeThickness="1"
+                            Stroke="{StaticResource CardBorder}"
+                            StrokeShape="RoundRectangle 18"
+                            HeightRequest="220"
+                            Padding="0">
+                        <Border.Shadow>
+                            <Shadow Brush="#1A000000" Offset="0,4" Radius="10" Opacity="0.6" />
+                        </Border.Shadow>
+
+                        <Grid>
+                            <!-- Leaflet.js MapView Rendering OpenStreetMap Tiles & Polylines -->
+                            <controls:LeafletMapView x:Name="DeliveryMapView"
+                                                     Markers="{Binding MapMarkers}"
+                                                     RouteCoordinates="{Binding RouteCoordinates}"
+                                                     RoutePolylineColor="#1E6B39" />
+
+                            <!-- Route Distance & ETA Overlay Pill (Top Left) -->
+                            <Border BackgroundColor="{StaticResource CardBg}"
+                                    StrokeThickness="1"
+                                    Stroke="{StaticResource CardBorder}"
+                                    StrokeShape="RoundRectangle 12"
+                                    Padding="10,6"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Start"
+                                    Margin="10,10,0,0">
+                                <Border.Shadow>
+                                    <Shadow Brush="#30000000" Offset="0,2" Radius="6" />
+                                </Border.Shadow>
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Label Text="⏱" FontSize="12" VerticalOptions="Center" />
+                                    <Label Text="{Binding EtaText}"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource BrandGreen}" />
+                                    <Label Text="·" TextColor="{StaticResource TextSecondary}" />
+                                    <Label Text="{Binding DistanceText}"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                </HorizontalStackLayout>
+                            </Border>
+
+                            <!-- Route Engine Provider Status (Bottom Left) -->
+                            <Border BackgroundColor="#CCFFFFFF"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="6,3"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="End"
+                                    Margin="10,0,0,10">
+                                <Label Text="{Binding RoutingStatus}"
+                                       FontSize="10"
+                                       TextColor="{StaticResource TextSecondary}" />
+                            </Border>
+
+                            <!-- Live Simulation / Refresh Floating Button (Bottom Right) -->
+                            <Border BackgroundColor="{StaticResource BrandGreen}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 16"
+                                    WidthRequest="34"
+                                    HeightRequest="34"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="End"
+                                    Margin="0,0,10,10">
+                                <Border.Shadow>
+                                    <Shadow Brush="#401E6B39" Offset="0,2" Radius="6" />
+                                </Border.Shadow>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleSimulationCommand}" />
+                                </Border.GestureRecognizers>
+                                <Label Text="▶"
+                                       FontSize="13"
+                                       TextColor="{StaticResource TextWhite}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- ── Courier Info Card ── -->
+                <Border BackgroundColor="{StaticResource CardBg}"
+                        StrokeThickness="1"
+                        Stroke="{StaticResource CardBorder}"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="12,10">
+                    <Border.Shadow>
+                        <Shadow Brush="#10000000" Offset="0,2" Radius="6" Opacity="0.5" />
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="48,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
+
+                        <!-- Courier Avatar Photo -->
+                        <Border Grid.Column="0"
+                                StrokeThickness="1.5"
+                                Stroke="{StaticResource BrandGreen}"
+                                StrokeShape="RoundRectangle 24"
+                                WidthRequest="48"
+                                HeightRequest="48"
+                                Padding="0">
+                            <Image Source="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&amp;auto=format&amp;fit=crop&amp;q=80"
+                                   Aspect="AspectFill"
+                                   WidthRequest="48"
+                                   HeightRequest="48">
+                                <Image.Clip>
+                                    <RoundRectangleGeometry CornerRadius="24" Rect="0,0,48,48" />
+                                </Image.Clip>
+                            </Image>
+                        </Border>
+
+                        <!-- Courier Details -->
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label x:Name="CourierNameLabel"
+                                   Text="Mike Roberts"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}" />
+                            <Label Text="⭐ 4.9 • Delivery Partner"
+                                   FontSize="11"
+                                   TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
+
+                        <!-- Green Call Button -->
+                        <Button Grid.Column="2"
+                                Text="📞 Call"
+                                BackgroundColor="{StaticResource BrandGreen}"
+                                TextColor="{StaticResource TextWhite}"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                HeightRequest="38"
+                                Padding="14,0"
+                                Clicked="OnCallCourierClicked" />
+                    </Grid>
+                </Border>
+
+                <!-- ── View Completion Button (Shortcut to Order Completed) ── -->
+                <Button Text="Simulate Order Delivered →"
+                        Style="{StaticResource BtnSecondary}"
+                        HeightRequest="46"
+                        FontSize="13"
+                        CornerRadius="14"
+                        Margin="0,4,0,0"
+                        Clicked="OnViewOrderCompletedClicked" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

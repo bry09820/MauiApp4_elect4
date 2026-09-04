@@ -44,7 +44,7 @@
                         HeightRequest="40"
                         Clicked="OnProductsTabClicked">
                     <Button.Shadow>
-                        <Shadow Brush="#55FF6B4A" Offset="0,2" Radius="8" Opacity="0.35" />
+                        <Shadow Brush="#4D1E6B39" Offset="0,2" Radius="8" Opacity="0.35" />
                     </Button.Shadow>
                 </Button>
 
@@ -94,7 +94,7 @@
                         HeightRequest="50"
                         Clicked="OnAddProductClicked">
                     <Button.Shadow>
-                        <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="12" Opacity="0.4" />
+                        <Shadow Brush="#4D1E6B39" Offset="0,4" Radius="12" Opacity="0.4" />
                     </Button.Shadow>
                 </Button>
 
@@ -390,7 +390,7 @@
                         HeightRequest="52"
                         Clicked="OnOpenReportsClicked">
                     <Button.Shadow>
-                        <Shadow Brush="#66FF6B4A" Offset="0,4" Radius="12" Opacity="0.4" />
+                        <Shadow Brush="#4D1E6B39" Offset="0,4" Radius="12" Opacity="0.4" />
                     </Button.Shadow>
                 </Button>
 
