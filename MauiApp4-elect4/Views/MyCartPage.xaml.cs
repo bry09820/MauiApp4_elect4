@@ -108,6 +108,39 @@ namespace MauiApp4_elect4.Views
             }
         }
 
+        private async void OnSubstitutionPreferenceTapped(object? sender, TappedEventArgs e)
+        {
+            try
+            {
+                if (sender is VisualElement el) await PressPopAsync(el, 0.90);
+
+                if (e.Parameter is CartItem item)
+                {
+                    string action = await DisplayActionSheetAsync(
+                        $"🔄 Substitution Rule: {item.Product?.Name}",
+                        "Cancel",
+                        null,
+                        SubstitutionOptionExtensions.AutomaticReplacementText,
+                        SubstitutionOptionExtensions.RefundImmediatelyText,
+                        SubstitutionOptionExtensions.ContactShopperText);
+
+                    if (!string.IsNullOrEmpty(action) && action != "Cancel")
+                    {
+                        var selectedOption = SubstitutionOptionExtensions.FromDisplayText(action);
+                        item.SubstitutionPreference = selectedOption;
+                        if (item.Product != null)
+                        {
+                            item.Product.SubstitutionPreference = selectedOption;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MyCartPage] SubstitutionPreference error: {ex.Message}");
+            }
+        }
+
         private async void OnProceedToCheckoutClicked(object? sender, EventArgs e)
         {
             try

@@ -42,6 +42,7 @@ namespace MauiApp4_elect4.ViewModels
 
         public Order? ActiveOrder => MockDataService.Orders.FirstOrDefault(o => o.Status == "Out for Delivery" || o.Status == "Preparing Order" || o.Status == "Pending");
         public bool HasActiveOrder => ActiveOrder != null;
+        public bool HasPendingSubstitutions => ActiveOrder?.HasPendingSubstitutions == true;
 
         public OrdersViewModel()
         {
@@ -58,11 +59,55 @@ namespace MauiApp4_elect4.ViewModels
                 FilterOrders(SearchText);
                 OnPropertyChanged(nameof(ActiveOrder));
                 OnPropertyChanged(nameof(HasActiveOrder));
+                OnPropertyChanged(nameof(HasPendingSubstitutions));
             }
             finally
             {
                 IsBusy = false;
             }
+        }
+
+        public void ApproveSubstitution(PickerSubstitutionRequest req, Order order)
+        {
+            if (req == null || order == null) return;
+            req.Status = SubstitutionStatus.Approved;
+
+            var matchingItem = order.Items.FirstOrDefault(i =>
+                i.Product != null &&
+                (i.Product.Name.Contains("Sourdough", StringComparison.OrdinalIgnoreCase) ||
+                 req.OriginalItemName.Contains(i.Product.Name, StringComparison.OrdinalIgnoreCase)));
+
+            if (matchingItem != null)
+            {
+                matchingItem.Product.Name = req.ProposedItemName;
+                matchingItem.Product.Price = req.ProposedItemPrice;
+            }
+
+            order.Subtotal = order.Items.Sum(i => i.Subtotal);
+            order.TotalAmount = Math.Max(0m, order.Subtotal + order.DeliveryFee - order.DiscountAmount);
+
+            LoadOrdersForTab();
+        }
+
+        public void DeclineSubstitution(PickerSubstitutionRequest req, Order order)
+        {
+            if (req == null || order == null) return;
+            req.Status = SubstitutionStatus.DeclinedRefunded;
+
+            var matchingItem = order.Items.FirstOrDefault(i =>
+                i.Product != null &&
+                (i.Product.Name.Contains("Sourdough", StringComparison.OrdinalIgnoreCase) ||
+                 req.OriginalItemName.Contains(i.Product.Name, StringComparison.OrdinalIgnoreCase)));
+
+            if (matchingItem != null)
+            {
+                order.Items.Remove(matchingItem);
+            }
+
+            order.Subtotal = order.Items.Sum(i => i.Subtotal);
+            order.TotalAmount = Math.Max(0m, order.Subtotal + order.DeliveryFee - order.DiscountAmount);
+
+            LoadOrdersForTab();
         }
 
         public void FilterOrders(string query)

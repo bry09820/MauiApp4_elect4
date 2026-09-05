@@ -41,7 +41,22 @@ namespace MauiApp4_elect4.Models
         /// <summary>Associated vendor or store name.</summary>
         public string VendorName { get; set; } = "GreenMarket";
 
+        /// <summary>Customer preference for replacements when item is out of stock.</summary>
+        public SubstitutionOption SubstitutionPreference { get; set; } = SubstitutionOption.AutomaticReplacement;
+
+        /// <summary>Optional specific alternative product ID preferred as replacement.</summary>
+        public int? FallbackProductId { get; set; }
+
+        /// <summary>Optional suggested alternative product name.</summary>
+        public string? FallbackProductName { get; set; }
+
         /// <summary>Formatted price string for display.</summary>
         public string FormattedPrice => $"${Price:F2}";
+
+        /// <summary>Human-readable substitution preference display text.</summary>
+        public string SubstitutionPreferenceDisplay => SubstitutionPreference.ToDisplayText();
+
+        /// <summary>Short badge text for substitution preference.</summary>
+        public string SubstitutionBadgeText => SubstitutionPreference.ToShortBadgeText();
     }
 }

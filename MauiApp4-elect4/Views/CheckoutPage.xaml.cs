@@ -1,57 +1,33 @@
 using MauiApp4_elect4.Models;
-using MauiApp4_elect4.Services;
+using MauiApp4_elect4.ViewModels;
 
 namespace MauiApp4_elect4.Views
 {
     [QueryProperty(nameof(ScheduledDelivery), "scheduledDelivery")]
     public partial class CheckoutPage : ContentPage
     {
-        private readonly CartService _cartService = CartService.Instance;
-        private readonly UserProfileService _profileService = UserProfileService.Instance;
-
-        private string _selectedDeliveryMethod = "Home Delivery";
-        private string _selectedPaymentMethod = "Credit Card";
-        private decimal _discountAmount = 0m;
-        private const decimal BaseDeliveryFee = 1.09m;
+        public CheckoutViewModel ViewModel { get; }
 
         public string ScheduledDelivery { get; set; } = string.Empty;
 
         public CheckoutPage()
         {
             InitializeComponent();
+            ViewModel = new CheckoutViewModel();
+            BindingContext = ViewModel;
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            LoadCheckoutState();
+            ViewModel.LoadState();
+            UpdateUiFromViewModel();
         }
 
-        private void LoadCheckoutState()
+        private void UpdateUiFromViewModel()
         {
-            try
-            {
-                var profile = _profileService.Profile;
-                if (!string.IsNullOrWhiteSpace(profile?.DefaultAddress))
-                {
-                    AddressDisplayLabel.Text = profile.DefaultAddress;
-                }
-
-                CalculateTotal();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[CheckoutPage] LoadState error: {ex.Message}");
-            }
-        }
-
-        private void CalculateTotal()
-        {
-            decimal subtotal = _cartService.GetTotalAmount();
-            decimal fee = _selectedDeliveryMethod == "Home Delivery" ? BaseDeliveryFee : 0m;
-            decimal total = Math.Max(0m, subtotal + fee - _discountAmount);
-
-            SummaryTotalLabel.Text = total.ToString("C");
+            AddressDisplayLabel.Text = ViewModel.ShippingAddress;
+            SummaryTotalLabel.Text = ViewModel.FormattedTotal;
         }
 
         private static async Task PressPopAsync(VisualElement el, double scale = 0.92, uint downMs = 45, uint upMs = 65)
@@ -90,7 +66,9 @@ namespace MauiApp4_elect4.Views
 
                 if (!string.IsNullOrEmpty(action) && action != "Cancel")
                 {
-                    AddressDisplayLabel.Text = action.Replace("📍 ", "").Replace("🏢 ", "").Replace("🏠 ", "");
+                    string cleanedAddress = action.Replace("📍 ", "").Replace("🏢 ", "").Replace("🏠 ", "");
+                    ViewModel.SetAddress(cleanedAddress);
+                    AddressDisplayLabel.Text = cleanedAddress;
                 }
             }
             catch (Exception ex)
@@ -101,7 +79,7 @@ namespace MauiApp4_elect4.Views
 
         private void OnHomeDeliverySelected(object? sender, TappedEventArgs e)
         {
-            _selectedDeliveryMethod = "Home Delivery";
+            ViewModel.SetDeliveryMethod("Home Delivery");
 
             HomeDeliveryCard.Stroke = Color.FromArgb("#1E6B39");
             HomeDeliveryCard.StrokeThickness = 1.5;
@@ -115,12 +93,12 @@ namespace MauiApp4_elect4.Views
             PickupCheckBorder.StrokeThickness = 1.5;
             PickupCheckMark.Text = "";
 
-            CalculateTotal();
+            SummaryTotalLabel.Text = ViewModel.FormattedTotal;
         }
 
         private void OnPickupSelected(object? sender, TappedEventArgs e)
         {
-            _selectedDeliveryMethod = "Pickup";
+            ViewModel.SetDeliveryMethod("Pickup");
 
             PickupCard.Stroke = Color.FromArgb("#1E6B39");
             PickupCard.StrokeThickness = 1.5;
@@ -134,12 +112,12 @@ namespace MauiApp4_elect4.Views
             HomeDeliveryCheckBorder.StrokeThickness = 1.5;
             HomeDeliveryCheckMark.Text = "";
 
-            CalculateTotal();
+            SummaryTotalLabel.Text = ViewModel.FormattedTotal;
         }
 
         private void OnCreditCardSelected(object? sender, TappedEventArgs e)
         {
-            _selectedPaymentMethod = "Credit Card";
+            ViewModel.SetPaymentMethod("Credit Card");
 
             CreditCardBorder.Stroke = Color.FromArgb("#1E6B39");
             CreditCardBorder.StrokeThickness = 1.5;
@@ -156,7 +134,7 @@ namespace MauiApp4_elect4.Views
 
         private void OnWalletSelected(object? sender, TappedEventArgs e)
         {
-            _selectedPaymentMethod = "Digital Wallet";
+            ViewModel.SetPaymentMethod("Digital Wallet");
 
             WalletBorder.Stroke = Color.FromArgb("#1E6B39");
             WalletBorder.StrokeThickness = 1.5;
@@ -177,32 +155,14 @@ namespace MauiApp4_elect4.Views
             {
                 if (sender is VisualElement el) await PressPopAsync(el, scale: 0.92, downMs: 35, upMs: 55);
 
-                string code = CheckoutPromoEntry?.Text?.Trim().ToUpperInvariant() ?? string.Empty;
-                decimal subtotal = _cartService.GetTotalAmount();
+                string code = CheckoutPromoEntry?.Text?.Trim() ?? string.Empty;
+                bool success = ViewModel.ApplyPromoCode(code);
 
-                if (code == "SAVE20")
-                {
-                    _discountAmount = subtotal * 0.20m;
-                    PromoFeedbackLabel.Text = $"🎉 'SAVE20' Applied: -{_discountAmount:C}";
-                    PromoFeedbackLabel.TextColor = Color.FromArgb("#1E6B39");
-                    PromoFeedbackLabel.IsVisible = true;
-                }
-                else if (code == "FREESHIP")
-                {
-                    _discountAmount = BaseDeliveryFee;
-                    PromoFeedbackLabel.Text = "🚚 'FREESHIP' Applied: Free Delivery";
-                    PromoFeedbackLabel.TextColor = Color.FromArgb("#1E6B39");
-                    PromoFeedbackLabel.IsVisible = true;
-                }
-                else
-                {
-                    _discountAmount = 0m;
-                    PromoFeedbackLabel.Text = "❌ Invalid promo code.";
-                    PromoFeedbackLabel.TextColor = Color.FromArgb("#EF4444");
-                    PromoFeedbackLabel.IsVisible = true;
-                }
+                PromoFeedbackLabel.Text = ViewModel.PromoFeedbackText;
+                PromoFeedbackLabel.TextColor = success ? Color.FromArgb("#1E6B39") : Color.FromArgb("#EF4444");
+                PromoFeedbackLabel.IsVisible = ViewModel.IsPromoFeedbackVisible;
 
-                CalculateTotal();
+                SummaryTotalLabel.Text = ViewModel.FormattedTotal;
             }
             catch (Exception ex)
             {
@@ -216,35 +176,8 @@ namespace MauiApp4_elect4.Views
             {
                 if (sender is VisualElement el) await PressPopAsync(el, scale: 0.95, downMs: 50);
 
-                decimal subtotal = _cartService.GetTotalAmount();
-                decimal fee = _selectedDeliveryMethod == "Home Delivery" ? BaseDeliveryFee : 0m;
-                decimal total = Math.Max(0m, subtotal + fee - _discountAmount);
-
-                var profile = _profileService.Profile;
-
-                var order = new Order
-                {
-                    CustomerName = !string.IsNullOrWhiteSpace(profile?.FullName) ? profile.FullName : "Alex Rivera",
-                    ContactNumber = !string.IsNullOrWhiteSpace(profile?.ContactNumber) ? profile.ContactNumber : "+1 (555) 019-2834",
-                    ShippingAddress = AddressDisplayLabel.Text,
-                    DeliveryMethod = _selectedDeliveryMethod,
-                    PaymentMethod = _selectedPaymentMethod,
-                    Items = [.. _cartService.CartItems],
-                    Subtotal = subtotal > 0 ? subtotal : 11.99m,
-                    DeliveryFee = fee,
-                    DiscountAmount = _discountAmount,
-                    TotalAmount = total > 0 ? total : 13.08m,
-                    ScheduledDeliveryDate = DateTime.Now.AddMinutes(15),
-                    EstimatedMinutes = 15,
-                    CourierName = "Mike Roberts",
-                    CourierPhone = "+1 (555) 839-2041",
-                    Status = "Out for Delivery"
-                };
-
-                MockDataService.AddOrder(order);
-
-                // Clear active cart
-                _cartService.ClearCart();
+                // Place order and automatically reset the active cart
+                Order order = await ViewModel.PlaceOrderAsync();
 
                 // Navigate to OrderCompletedPage
                 await Shell.Current.GoToAsync($"{nameof(OrderCompletedPage)}?orderId={order.Id}");

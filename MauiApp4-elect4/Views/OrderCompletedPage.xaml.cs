@@ -32,6 +32,18 @@ namespace MauiApp4_elect4.Views
         {
             base.OnAppearing();
             LoadCompletedOrder();
+            CleanupPrecedingNavigationStack();
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Intercept system/hardware back button to navigate to Home cleanly
+            // instead of popping back into the Checkout/Cart stack
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await NavigateAndClearStackAsync("//ExploreShopsPage");
+            });
+            return true;
         }
 
         private void LoadCompletedOrder()
@@ -66,6 +78,61 @@ namespace MauiApp4_elect4.Views
             }
         }
 
+        /// <summary>
+        /// Cleans up preceding pages (such as CheckoutPage) from the navigation stack
+        /// so pressing back never re-enters checkout.
+        /// </summary>
+        private void CleanupPrecedingNavigationStack()
+        {
+            try
+            {
+                var nav = Navigation;
+                if (nav?.NavigationStack != null && nav.NavigationStack.Count > 1)
+                {
+                    var pagesToRemove = nav.NavigationStack
+                        .Where(p => p != this && (p is CheckoutPage || p is CartPage || p is MyCartPage))
+                        .ToList();
+
+                    foreach (var page in pagesToRemove)
+                    {
+                        nav.RemovePage(page);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[OrderCompletedPage] CleanupPrecedingNavigationStack error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Clears the navigation backstack and navigates to the specified root shell route.
+        /// </summary>
+        private async Task NavigateAndClearStackAsync(string targetRoute)
+        {
+            try
+            {
+                // Pop backstack to root so current tab is clean
+                if (Navigation?.NavigationStack?.Count > 1)
+                {
+                    await Navigation.PopToRootAsync(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[OrderCompletedPage] PopToRootAsync error: {ex.Message}");
+            }
+
+            try
+            {
+                await Shell.Current.GoToAsync(targetRoute);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[OrderCompletedPage] Shell.GoToAsync error: {ex.Message}");
+            }
+        }
+
         private static async Task PressPopAsync(VisualElement el, double scale = 0.92, uint downMs = 45, uint upMs = 65)
         {
             await el.ScaleToAsync(scale, downMs, Easing.CubicIn);
@@ -77,7 +144,7 @@ namespace MauiApp4_elect4.Views
             try
             {
                 if (sender is VisualElement el) await PressPopAsync(el);
-                await Shell.Current.GoToAsync("//ExploreShopsPage");
+                await NavigateAndClearStackAsync("//ExploreShopsPage");
             }
             catch
             {
@@ -90,7 +157,7 @@ namespace MauiApp4_elect4.Views
             try
             {
                 if (sender is VisualElement el) await PressPopAsync(el, scale: 0.94, downMs: 40);
-                await Shell.Current.GoToAsync("//ExploreShopsPage");
+                await NavigateAndClearStackAsync("//ExploreShopsPage");
             }
             catch (Exception ex)
             {
@@ -104,12 +171,12 @@ namespace MauiApp4_elect4.Views
             try
             {
                 if (sender is VisualElement el) await PressPopAsync(el, scale: 0.94, downMs: 40);
-                await Shell.Current.GoToAsync($"{nameof(TrackOrderPage)}?orderId={_currentOrder.Id}");
+                await NavigateAndClearStackAsync("//OrdersPage");
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[OrderCompletedPage] TrackOrders error: {ex.Message}");
-                await Shell.Current.GoToAsync(nameof(TrackOrderPage));
+                await Shell.Current.GoToAsync("//OrdersPage");
             }
         }
     }

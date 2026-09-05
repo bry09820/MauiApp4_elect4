@@ -83,6 +83,12 @@ namespace MauiApp4_elect4.Models
         /// <summary>Action button label (e.g. "Track", "View Details").</summary>
         public string ActionButtonText => Status == "Delivered" ? "View Details" : "Track";
 
+        /// <summary>Live picker substitution requests for out-of-stock items in this order.</summary>
+        public List<PickerSubstitutionRequest> SubstitutionRequests { get; set; } = [];
+
+        /// <summary>Indicates whether any substitution request requires customer approval.</summary>
+        public bool HasPendingSubstitutions => SubstitutionRequests.Any(s => s.IsPending);
+
         /// <summary>
         /// Human-readable summary of item count for display.
         /// </summary>

@@ -59,9 +59,25 @@ namespace MauiApp4_elect4.Services
                 CourierPhotoUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80",
                 Items =
                 [
-                    new CartItem { Product = new Product { Id = 204, Name = "Fresh Lettuce", Category = "Vegetables", Price = 1.99m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=500&auto=format&fit=crop&q=80" }, Quantity = 1 },
-                    new CartItem { Product = new Product { Id = 401, Name = "Sourdough Bread", Category = "Bakery", Price = 1.99m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=500&auto=format&fit=crop&q=80" }, Quantity = 1 },
-                    new CartItem { Product = new Product { Id = 501, Name = "Orange Juice", Category = "Beverages", Price = 1.29m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80" }, Quantity = 1 }
+                    new CartItem { Product = new Product { Id = 204, Name = "Fresh Lettuce", Category = "Vegetables", Price = 1.99m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=500&auto=format&fit=crop&q=80", SubstitutionPreference = SubstitutionOption.AutomaticReplacement }, Quantity = 1, SubstitutionPreference = SubstitutionOption.AutomaticReplacement },
+                    new CartItem { Product = new Product { Id = 401, Name = "Sourdough Bread", Category = "Bakery", Price = 1.99m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=500&auto=format&fit=crop&q=80", SubstitutionPreference = SubstitutionOption.ContactShopper }, Quantity = 1, SubstitutionPreference = SubstitutionOption.ContactShopper },
+                    new CartItem { Product = new Product { Id = 501, Name = "Orange Juice", Category = "Beverages", Price = 1.29m, Weight = "1.0g", ImageUrl = "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80", SubstitutionPreference = SubstitutionOption.RefundImmediately }, Quantity = 1, SubstitutionPreference = SubstitutionOption.RefundImmediately }
+                ],
+                SubstitutionRequests =
+                [
+                    new PickerSubstitutionRequest
+                    {
+                        Id = "sub-104-01",
+                        OrderId = 104,
+                        OriginalItemName = "Sourdough Bread (1.0g)",
+                        OriginalItemPrice = 1.99m,
+                        ProposedItemName = "Artisan Organic Multigrain Loaf (1.0g)",
+                        ProposedItemPrice = 2.49m,
+                        PickerName = "Elena Ramos (Store Shopper)",
+                        PickerMessage = "Bakery shelf is fresh out of Sourdough Bread. Would you like this freshly baked Organic Multigrain Loaf from Aisle 4 (+ $0.50) as an alternative?",
+                        AislePhotoUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80",
+                        Status = SubstitutionStatus.PendingApproval
+                    }
                 ]
             });
 

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:MauiApp4_elect4.Controls"
              xmlns:vm="clr-namespace:MauiApp4_elect4.ViewModels"
+             xmlns:models="clr-namespace:MauiApp4_elect4.Models"
              x:Class="MauiApp4_elect4.Views.TrackOrderPage"
              x:DataType="vm:TrackOrderViewModel"
              Title="Track Order"
@@ -26,6 +27,7 @@
                 <!-- Back Button -->
                 <Border Grid.Column="0"
                         BackgroundColor="#2D7F4C"
+                        Stroke="Transparent"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 20"
                         WidthRequest="40"
@@ -58,6 +60,7 @@
                 <!-- Lock / Status Pill -->
                 <Border Grid.Column="2"
                         BackgroundColor="#2D7F4C"
+                        Stroke="Transparent"
                         StrokeThickness="0"
                         StrokeShape="RoundRectangle 18"
                         WidthRequest="36"
@@ -90,28 +93,46 @@
                         <CollectionView x:Name="OrderItemsCollectionView"
                                         SelectionMode="None">
                             <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid ColumnDefinitions="42,*,Auto" ColumnSpacing="10" Padding="0,4" VerticalOptions="Center">
+                                <DataTemplate x:DataType="models:CartItem">
+                                    <Grid ColumnDefinitions="48,*,Auto" ColumnSpacing="10" Padding="0,6" VerticalOptions="Center">
                                         <!-- Thumbnail -->
                                         <Border Grid.Column="0"
-                                                BackgroundColor="#F8FAFC"
-                                                StrokeThickness="0"
-                                                StrokeShape="RoundRectangle 8"
-                                                WidthRequest="42"
-                                                HeightRequest="42">
+                                                BackgroundColor="#EEF4F0"
+                                                Stroke="{StaticResource CardBorder}"
+                                                StrokeThickness="1"
+                                                StrokeShape="RoundRectangle 10"
+                                                WidthRequest="48"
+                                                HeightRequest="48"
+                                                Padding="0">
                                             <Image Source="{Binding Product.ImageUrl}"
-                                                   Aspect="AspectFill" />
+                                                   Aspect="AspectFill"
+                                                   WidthRequest="48"
+                                                   HeightRequest="48">
+                                                <Image.Clip>
+                                                    <RoundRectangleGeometry CornerRadius="10" Rect="0,0,48,48" />
+                                                </Image.Clip>
+                                            </Image>
                                         </Border>
 
                                         <!-- Name & Unit -->
-                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
                                             <Label Text="{Binding Product.Name}"
                                                    FontSize="13"
                                                    FontAttributes="Bold"
-                                                   TextColor="{StaticResource TextPrimary}" />
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   LineBreakMode="TailTruncation" />
                                             <HorizontalStackLayout Spacing="4">
-                                                <Label Text="✓" FontSize="9" TextColor="{StaticResource BrandGreen}" FontAttributes="Bold" VerticalOptions="Center" />
-                                                <Label Text="{Binding Quantity, StringFormat='{0} - 1.0kg'}"
+                                                <Label Text="✓"
+                                                       FontSize="9"
+                                                       TextColor="{StaticResource BrandGreen}"
+                                                       FontAttributes="Bold"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="{Binding Product.Weight, StringFormat='Qty: {0}'}"
+                                                       FontSize="10"
+                                                       TextColor="{StaticResource TextSecondary}"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="•" FontSize="9" TextColor="{StaticResource TextSecondary}" VerticalOptions="Center" />
+                                                <Label Text="{Binding Quantity, StringFormat='x{0}'}"
                                                        FontSize="10"
                                                        TextColor="{StaticResource TextSecondary}"
                                                        VerticalOptions="Center" />
@@ -145,13 +166,253 @@
                                        TextColor="{StaticResource TextSecondary}"
                                        VerticalOptions="Center" />
                                 <Label x:Name="OrderTotalLabel"
-                                       Text="$13.08"
+                                       Text="—"
                                        FontSize="15"
                                        FontAttributes="Bold"
                                        TextColor="{StaticResource TextPrimary}"
                                        VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ── LIVE PICKER PHOTO CHAT COMPONENT (Flagged OOS Item) ── -->
+                <Border BackgroundColor="{StaticResource CardBg}"
+                        StrokeThickness="1.5"
+                        Stroke="#E65100"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="14,14"
+                        IsVisible="{Binding HasSubstitutions}">
+                    <Border.Shadow>
+                        <Shadow Brush="#22E65100" Offset="0,4" Radius="10" Opacity="0.7" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <!-- Top Header: Live Picker Status & Collapse Toggle -->
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                            <!-- Store Shopper Photo Avatar -->
+                            <Border Grid.Column="0"
+                                    StrokeThickness="1.5"
+                                    Stroke="#E65100"
+                                    StrokeShape="RoundRectangle 20"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    Padding="0">
+                                <Image Source="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&amp;auto=format&amp;fit=crop&amp;q=80"
+                                       Aspect="AspectFill"
+                                       WidthRequest="40"
+                                       HeightRequest="40">
+                                    <Image.Clip>
+                                        <RoundRectangleGeometry CornerRadius="20" Rect="0,0,40,40" />
+                                    </Image.Clip>
+                                </Image>
+                            </Border>
+
+                            <!-- Shopper Name & Live Badge -->
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Label Text="Live Store Shopper"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}" />
+                                    <!-- Action Required Pill -->
+                                    <Border BackgroundColor="#FFF3E0"
+                                            StrokeThickness="1"
+                                            Stroke="#FFE0B2"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="6,1">
+                                        <Label Text="Action Needed"
+                                               FontSize="9"
+                                               FontAttributes="Bold"
+                                               TextColor="#E65100" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label Text="Elena Ramos • Aisle 4 • 2 mins ago"
+                                       FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+
+                            <!-- Collapse / Expand Button -->
+                            <Border Grid.Column="2"
+                                    BackgroundColor="#F8FAFC"
+                                    StrokeThickness="1"
+                                    Stroke="{StaticResource CardBorder}"
+                                    StrokeShape="RoundRectangle 16"
+                                    WidthRequest="32"
+                                    HeightRequest="32">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding TogglePickerChatCommand}" />
+                                </Border.GestureRecognizers>
+                                <Label Text="💬"
+                                       FontSize="13"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+
+                        <!-- Collapsible Body Content -->
+                        <VerticalStackLayout Spacing="10" IsVisible="{Binding IsPickerChatExpanded}">
+
+                            <!-- Shopper Chat Bubble -->
+                            <Border BackgroundColor="#FFF8F0"
+                                    StrokeThickness="1"
+                                    Stroke="#FFE4CC"
+                                    StrokeShape="RoundRectangle 12"
+                                    Padding="12,10">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Grid.Column="0" Text="🗣️" FontSize="15" VerticalOptions="Start" />
+                                    <Label Grid.Column="1"
+                                           Text="&quot;The bakery shelf is out of regular Sourdough Bread. I found this freshly baked Organic Multigrain Loaf in Aisle 4 as an organic substitute!&quot;"
+                                           FontSize="12"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           LineBreakMode="WordWrap" />
+                                </Grid>
+                            </Border>
+
+                            <!-- Substitution Items List -->
+                            <CollectionView ItemsSource="{Binding SubstitutionRequests}" SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:PickerSubstitutionRequest">
+                                        <VerticalStackLayout Spacing="10">
+
+                                             <!-- Aisle Photo Preview Card with Zoom Badge -->
+                                            <Border StrokeThickness="1"
+                                                    Stroke="{StaticResource CardBorder}"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    HeightRequest="140"
+                                                    Padding="0">
+                                                <Grid>
+                                                    <Image Source="{Binding AislePhotoUrl}"
+                                                           Aspect="AspectFill"
+                                                           HeightRequest="140" />
+                                                    <!-- Location overlay tag -->
+                                                    <Border BackgroundColor="#CC000000"
+                                                            Stroke="Transparent"
+                                                            StrokeThickness="0"
+                                                            StrokeShape="RoundRectangle 8"
+                                                            Padding="8,4"
+                                                            HorizontalOptions="Start"
+                                                            VerticalOptions="End"
+                                                            Margin="8">
+                                                        <Label Text="📸 Live Aisle Shelf Photo"
+                                                               FontSize="10"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{StaticResource TextWhite}" />
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Item Comparison Box -->
+                                            <Border BackgroundColor="#F8FAFC"
+                                                    StrokeThickness="1"
+                                                    Stroke="{StaticResource CardBorder}"
+                                                    StrokeShape="RoundRectangle 10"
+                                                    Padding="10,8">
+                                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="4">
+                                                    <!-- Original item -->
+                                                    <Label Grid.Row="0" Grid.Column="0"
+                                                           Text="{Binding OriginalItemName, StringFormat='Out of Stock: {0}'}"
+                                                           FontSize="11"
+                                                           TextColor="#E53E3E"
+                                                           FontAttributes="Bold" />
+                                                    <Label Grid.Row="0" Grid.Column="1"
+                                                           Text="{Binding OriginalItemPrice, StringFormat='${0:F2}'}"
+                                                           FontSize="11"
+                                                           TextColor="{StaticResource TextSecondary}" />
+
+                                                    <!-- Proposed replacement -->
+                                                    <Label Grid.Row="1" Grid.Column="0"
+                                                           Text="{Binding ProposedItemName, StringFormat='Proposed: {0}'}"
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource BrandGreen}"
+                                                           FontAttributes="Bold" />
+                                                    <Label Grid.Row="1" Grid.Column="1"
+                                                           Text="{Binding ProposedItemPrice, StringFormat='${0:F2}'}"
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource TextPrimary}"
+                                                           FontAttributes="Bold" />
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Action Buttons: Visible ONLY when status = PendingApproval -->
+                                            <Grid ColumnDefinitions="*,*"
+                                                  ColumnSpacing="10"
+                                                  IsVisible="{Binding IsPending}"
+                                                  IsEnabled="True"
+                                                  InputTransparent="False">
+                                                <!-- Decline & Refund Button -->
+                                                <Button Grid.Column="0"
+                                                        Text="Decline &amp; Refund"
+                                                        BackgroundColor="#FEF2F2"
+                                                        TextColor="#DC2626"
+                                                        BorderColor="#FECACA"
+                                                        BorderWidth="1.5"
+                                                        FontAttributes="Bold"
+                                                        FontSize="12"
+                                                        CornerRadius="12"
+                                                        HeightRequest="44"
+                                                        Padding="4,0"
+                                                        IsEnabled="True"
+                                                        InputTransparent="False"
+                                                        Clicked="OnDeclineSubstitutionClicked"
+                                                        CommandParameter="{Binding .}" />
+
+                                                <!-- Approve Replacement Button -->
+                                                <Button Grid.Column="1"
+                                                        Text="Approve (+ $0.50)"
+                                                        BackgroundColor="{StaticResource BrandGreen}"
+                                                        TextColor="White"
+                                                        FontAttributes="Bold"
+                                                        FontSize="12"
+                                                        CornerRadius="12"
+                                                        HeightRequest="44"
+                                                        Padding="4,0"
+                                                        IsEnabled="True"
+                                                        InputTransparent="False"
+                                                        Clicked="OnApproveSubstitutionClicked"
+                                                        CommandParameter="{Binding .}" />
+                                            </Grid>
+
+                                            <!-- Approved Banner (Visible when Approved) -->
+                                            <Border BackgroundColor="#EBF6EE"
+                                                    StrokeThickness="1"
+                                                    Stroke="{StaticResource BrandGreen}"
+                                                    StrokeShape="RoundRectangle 10"
+                                                    Padding="12,8"
+                                                    IsVisible="{Binding IsApproved}">
+                                                <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                                                    <Label Text="✓" FontSize="13" TextColor="{StaticResource BrandGreen}" FontAttributes="Bold" />
+                                                    <Label Text="Replacement Approved — Basket Updated"
+                                                           FontSize="12"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{StaticResource BrandGreen}" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+
+                                            <!-- Declined Banner (Visible when Declined/Refunded) -->
+                                            <Border BackgroundColor="#F1F5F9"
+                                                    StrokeThickness="1"
+                                                    Stroke="{StaticResource CardBorder}"
+                                                    StrokeShape="RoundRectangle 10"
+                                                    Padding="12,8"
+                                                    IsVisible="{Binding IsDeclined}">
+                                                <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                                                    <Label Text="💰" FontSize="13" />
+                                                    <Label Text="Item Refunded to Original Payment"
+                                                           FontSize="12"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{StaticResource TextSecondary}" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                        </VerticalStackLayout>
+
                     </VerticalStackLayout>
                 </Border>
 
@@ -183,6 +444,7 @@
                         <!-- Recalculate / Search Button -->
                         <Border Grid.Column="1"
                                 BackgroundColor="{StaticResource BrandGreen}"
+                                Stroke="Transparent"
                                 StrokeThickness="0"
                                 StrokeShape="RoundRectangle 12"
                                 WidthRequest="38"
@@ -262,6 +524,7 @@
 
                             <!-- Route Engine Provider Status (Bottom Left) -->
                             <Border BackgroundColor="#CCFFFFFF"
+                                    Stroke="Transparent"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 8"
                                     Padding="6,3"
@@ -275,6 +538,7 @@
 
                             <!-- Live Simulation / Refresh Floating Button (Bottom Right) -->
                             <Border BackgroundColor="{StaticResource BrandGreen}"
+                                    Stroke="Transparent"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 16"
                                     WidthRequest="34"

@@ -133,7 +133,13 @@ namespace MauiApp4_elect4.Services
             }
             else
             {
-                CartItems.Add(new CartItem { Product = product, Quantity = 1 });
+                CartItems.Add(new CartItem
+                {
+                    Product = product,
+                    Quantity = 1,
+                    SubstitutionPreference = product.SubstitutionPreference,
+                    FallbackProductId = product.FallbackProductId
+                });
             }
         }
 

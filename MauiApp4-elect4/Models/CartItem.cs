@@ -11,6 +11,8 @@ namespace MauiApp4_elect4.Models
     public class CartItem : INotifyPropertyChanged
     {
         private int _quantity = 1;
+        private SubstitutionOption _substitutionPreference = SubstitutionOption.AutomaticReplacement;
+        private int? _fallbackProductId;
 
         /// <summary>The product that was added to the cart.</summary>
         public Product Product { get; set; } = new();
@@ -30,6 +32,42 @@ namespace MauiApp4_elect4.Models
                 }
             }
         }
+
+        /// <summary>Customer preference for replacements when this item is out of stock.</summary>
+        public SubstitutionOption SubstitutionPreference
+        {
+            get => _substitutionPreference;
+            set
+            {
+                if (_substitutionPreference != value)
+                {
+                    _substitutionPreference = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SubstitutionPreferenceDisplay));
+                    OnPropertyChanged(nameof(SubstitutionBadgeText));
+                }
+            }
+        }
+
+        /// <summary>Optional specific alternative product ID preferred as replacement.</summary>
+        public int? FallbackProductId
+        {
+            get => _fallbackProductId;
+            set
+            {
+                if (_fallbackProductId != value)
+                {
+                    _fallbackProductId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>Human-readable substitution preference display text.</summary>
+        public string SubstitutionPreferenceDisplay => SubstitutionPreference.ToDisplayText();
+
+        /// <summary>Short badge text for substitution preference.</summary>
+        public string SubstitutionBadgeText => SubstitutionPreference.ToShortBadgeText();
 
         /// <summary>
         /// Calculated total cost for this line item (Price × Quantity).

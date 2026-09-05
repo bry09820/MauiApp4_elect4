@@ -96,6 +96,38 @@ namespace MauiApp4_elect4.ViewModels
             set => SetProperty(ref _isCalculatingRoute, value);
         }
 
+        private bool _isPickerChatExpanded = true;
+        public bool IsPickerChatExpanded
+        {
+            get => _isPickerChatExpanded;
+            set => SetProperty(ref _isPickerChatExpanded, value);
+        }
+
+        public ObservableCollection<PickerSubstitutionRequest> SubstitutionRequests { get; } = [];
+        public bool HasPendingSubstitutions => SubstitutionRequests.Any(s => s.IsPending);
+        public bool HasSubstitutions => SubstitutionRequests.Count > 0;
+
+        private bool _isPendingSubstitution = true;
+        public bool IsPendingSubstitution
+        {
+            get => _isPendingSubstitution;
+            set => SetProperty(ref _isPendingSubstitution, value);
+        }
+
+        private bool _isApproved;
+        public bool IsApproved
+        {
+            get => _isApproved;
+            set => SetProperty(ref _isApproved, value);
+        }
+
+        private bool _isRefunded;
+        public bool IsRefunded
+        {
+            get => _isRefunded;
+            set => SetProperty(ref _isRefunded, value);
+        }
+
         public ObservableCollection<MapMarker> MapMarkers { get; } = [];
         public ObservableCollection<GeoPoint> RouteCoordinates { get; } = [];
 
@@ -103,6 +135,9 @@ namespace MauiApp4_elect4.ViewModels
         public ICommand SearchAddressCommand { get; }
         public ICommand ToggleSimulationCommand { get; }
         public ICommand UseCurrentLocationCommand { get; }
+        public ICommand ApproveSubstitutionCommand { get; }
+        public ICommand DeclineSubstitutionCommand { get; }
+        public ICommand TogglePickerChatCommand { get; }
 
         public TrackOrderViewModel(LocationService? locationService = null, UserProfileService? profileService = null)
         {
@@ -114,12 +149,134 @@ namespace MauiApp4_elect4.ViewModels
             SearchAddressCommand = new Command<string>(async (query) => await SearchAndSetAddressAsync(query));
             ToggleSimulationCommand = new Command(ToggleSimulation);
             UseCurrentLocationCommand = new Command(async () => await UseDeviceLocationAsync());
+
+            ApproveSubstitutionCommand = new Command<PickerSubstitutionRequest>(ApproveSubstitution);
+            DeclineSubstitutionCommand = new Command<PickerSubstitutionRequest>(DeclineSubstitution);
+            TogglePickerChatCommand = new Command(() => IsPickerChatExpanded = !IsPickerChatExpanded);
+        }
+
+        public void ApproveSubstitution(PickerSubstitutionRequest? req = null)
+        {
+            var target = req ?? SubstitutionRequests.FirstOrDefault();
+            if (target != null)
+            {
+                target.Status = SubstitutionStatus.Approved;
+            }
+
+            IsPendingSubstitution = false;
+            IsApproved = true;
+            IsRefunded = false;
+
+            // Apply replacement update to CurrentOrder items
+            var matchingItem = CurrentOrder.Items.FirstOrDefault(i =>
+                i.Product != null &&
+                (i.Product.Name.Contains("Sourdough", StringComparison.OrdinalIgnoreCase) ||
+                 (target != null && target.OriginalItemName.Contains(i.Product.Name, StringComparison.OrdinalIgnoreCase))));
+
+            if (matchingItem != null && target != null)
+            {
+                matchingItem.Product.Name = target.ProposedItemName;
+                matchingItem.Product.Price = target.ProposedItemPrice;
+            }
+
+            // Recalculate totals
+            CurrentOrder.Subtotal = CurrentOrder.Items.Sum(i => i.Subtotal);
+            CurrentOrder.TotalAmount = Math.Max(0m, CurrentOrder.Subtotal + CurrentOrder.DeliveryFee - CurrentOrder.DiscountAmount);
+
+            OnPropertyChanged(nameof(CurrentOrder));
+            OnPropertyChanged(nameof(HasPendingSubstitutions));
+            OnPropertyChanged(nameof(HasSubstitutions));
+            OnPropertyChanged(nameof(IsPendingSubstitution));
+            OnPropertyChanged(nameof(IsApproved));
+            OnPropertyChanged(nameof(IsRefunded));
+        }
+
+        public void DeclineSubstitution(PickerSubstitutionRequest? req = null)
+        {
+            var target = req ?? SubstitutionRequests.FirstOrDefault();
+            if (target != null)
+            {
+                target.Status = SubstitutionStatus.DeclinedRefunded;
+            }
+
+            IsPendingSubstitution = false;
+            IsApproved = false;
+            IsRefunded = true;
+
+            // Remove or mark item as refunded in CurrentOrder
+            var matchingItem = CurrentOrder.Items.FirstOrDefault(i =>
+                i.Product != null &&
+                (i.Product.Name.Contains("Sourdough", StringComparison.OrdinalIgnoreCase) ||
+                 (target != null && target.OriginalItemName.Contains(i.Product.Name, StringComparison.OrdinalIgnoreCase))));
+
+            if (matchingItem != null)
+            {
+                CurrentOrder.Items.Remove(matchingItem);
+            }
+
+            // Recalculate totals with refund applied
+            CurrentOrder.Subtotal = CurrentOrder.Items.Sum(i => i.Subtotal);
+            CurrentOrder.TotalAmount = Math.Max(0m, CurrentOrder.Subtotal + CurrentOrder.DeliveryFee - CurrentOrder.DiscountAmount);
+
+            OnPropertyChanged(nameof(CurrentOrder));
+            OnPropertyChanged(nameof(HasPendingSubstitutions));
+            OnPropertyChanged(nameof(HasSubstitutions));
+            OnPropertyChanged(nameof(IsPendingSubstitution));
+            OnPropertyChanged(nameof(IsApproved));
+            OnPropertyChanged(nameof(IsRefunded));
         }
 
         public async Task InitializeAsync(int orderId)
         {
             _orderId = orderId;
             CurrentOrder = MockDataService.GetOrderById(orderId) ?? MockDataService.GetLatestOrder();
+
+            SubstitutionRequests.Clear();
+            if (CurrentOrder.SubstitutionRequests.Count > 0)
+            {
+                foreach (var sub in CurrentOrder.SubstitutionRequests)
+                {
+                    SubstitutionRequests.Add(sub);
+                }
+            }
+            else
+            {
+                // Provide default demonstration substitution request for order tracking
+                var defaultSub = new PickerSubstitutionRequest
+                {
+                    OrderId = orderId,
+                    OriginalItemName = "Sourdough Bread (1.0g)",
+                    OriginalItemPrice = 1.99m,
+                    ProposedItemName = "Artisan Organic Multigrain Loaf (1.0g)",
+                    ProposedItemPrice = 2.49m,
+                    PickerName = "Elena Ramos (Store Shopper)",
+                    PickerMessage = "Bakery shelf is out of regular Sourdough Bread. I found this freshly baked Organic Multigrain Loaf in Aisle 4 as an organic substitute!",
+                    AislePhotoUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80",
+                    Status = SubstitutionStatus.PendingApproval
+                };
+                CurrentOrder.SubstitutionRequests.Add(defaultSub);
+                SubstitutionRequests.Add(defaultSub);
+            }
+
+            if (SubstitutionRequests.Count > 0)
+            {
+                var first = SubstitutionRequests[0];
+                IsPendingSubstitution = first.IsPending;
+                IsApproved = first.IsApproved;
+                IsRefunded = first.IsDeclined;
+            }
+            else
+            {
+                IsPendingSubstitution = true;
+                IsApproved = false;
+                IsRefunded = false;
+            }
+
+            OnPropertyChanged(nameof(IsPendingSubstitution));
+            OnPropertyChanged(nameof(IsApproved));
+            OnPropertyChanged(nameof(IsRefunded));
+            OnPropertyChanged(nameof(HasPendingSubstitutions));
+            OnPropertyChanged(nameof(HasSubstitutions));
 
             var profile = _profileService.Profile;
 

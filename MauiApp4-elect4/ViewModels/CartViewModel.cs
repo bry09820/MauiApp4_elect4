@@ -20,22 +20,22 @@ namespace MauiApp4_elect4.ViewModels
 
         public ObservableCollection<CartItem> CartItems => _cartService.CartItems;
 
-        public decimal Subtotal => _cartService.GetTotalAmount();
+        public decimal Subtotal => HasItems ? _cartService.GetTotalAmount() : 0m;
         public decimal DeliveryFee => HasItems ? (_appliedPromoCode == "FREESHIP" ? 0m : BaseDeliveryFee) : 0m;
-        public decimal DiscountAmount => _discountAmount;
-        public decimal TotalAmount => Math.Max(0m, Subtotal + DeliveryFee - DiscountAmount);
+        public decimal DiscountAmount => HasItems ? _discountAmount : 0m;
+        public decimal TotalAmount => HasItems ? Math.Max(0m, Subtotal + DeliveryFee - DiscountAmount) : 0m;
 
         public string FormattedSubtotal => $"${Subtotal:F2}";
         public string FormattedDeliveryFee => $"${DeliveryFee:F2}";
         public string FormattedDiscount => $"-${DiscountAmount:F2}";
         public string FormattedTotal => $"${TotalAmount:F2}";
 
-        public int TotalItemCount => _cartService.GetTotalItemCount();
+        public int TotalItemCount => HasItems ? _cartService.GetTotalItemCount() : 0;
         public string CartCountBadgeText => TotalItemCount.ToString();
 
         public bool HasItems => CartItems.Count > 0;
         public bool IsCartEmpty => !HasItems;
-        public bool HasDiscount => DiscountAmount > 0m;
+        public bool HasDiscount => HasItems && DiscountAmount > 0m;
 
         public string CheckoutButtonText => HasItems
             ? $"Proceed to Checkout ({FormattedTotal})  →"
@@ -101,12 +101,12 @@ namespace MauiApp4_elect4.ViewModels
                 return false;
             }
 
-            if (clean == "FRESH20" || clean == "ELECT4" || clean == "GREEN")
+            if (clean == "FRESH20" || clean == "ELECT4" || clean == "GREEN" || clean == "SAVE20")
             {
-                _discountAmount = 2.00m;
+                _discountAmount = Subtotal * 0.20m > 0m ? Subtotal * 0.20m : 2.00m;
                 _appliedPromoCode = clean;
                 NotifyCalculationsChanged();
-                message = "Promo code applied! You saved $2.00 on this order.";
+                message = $"Promo code '{clean}' applied! You saved {_discountAmount:C} on this order.";
                 return true;
             }
 

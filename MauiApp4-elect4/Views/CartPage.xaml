@@ -181,6 +181,30 @@
                                                        VerticalOptions="Center" />
                                             </HorizontalStackLayout>
                                         </Border>
+
+                                        <!-- Substitution Rule Selector Pill -->
+                                        <Border BackgroundColor="#EBF6EE"
+                                                StrokeThickness="1"
+                                                Stroke="#C8E6D0"
+                                                StrokeShape="RoundRectangle 6"
+                                                Padding="6,3"
+                                                HorizontalOptions="Start">
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnSubstitutionPreferenceTapped" CommandParameter="{Binding .}" />
+                                            </Border.GestureRecognizers>
+                                            <HorizontalStackLayout Spacing="3" VerticalOptions="Center">
+                                                <Label Text="{Binding SubstitutionBadgeText}"
+                                                       FontSize="10"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{StaticResource BrandGreen}"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="▾"
+                                                       FontSize="10"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{StaticResource BrandGreen}"
+                                                       VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                        </Border>
                                     </VerticalStackLayout>
 
                                     <!-- 3 · Unit Price & Quantity Stepper -->
